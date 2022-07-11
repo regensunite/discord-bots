@@ -1,8 +1,7 @@
 const { nestChannels } = require('../../../../utils/channels.js')
 const {
   runChannelTests,
-  formatTestResults,
-  expectObj,
+  formatTestOutputs,
   expectCategory,
   expectTextChannel,
   expectName,
@@ -22,34 +21,34 @@ const actualChannels = nestChannels(_rawChannels)
 const testResults = runChannelTests(actualChannels, () => {
   // TODO continue test cases
   
-  expectObj(() => {})
-  expectObj(() => {})
-  expectObj(() => {})
-  expectObj(() => {})
-  expectObj(() => {})
-  expectObj(() => {
+  expectTextChannel(() => {})
+  expectTextChannel(() => {})
+  expectTextChannel(() => {})
+  expectTextChannel(() => {})
+  expectCategory(() => {})
+  expectCategory(() => {
     // TODO main
-    expectObj(() => {})
-    expectObj(() => {})
+    expectTextChannel(() => {})
+    expectTextChannel(() => {})
   })
-  expectObj(() => {
+  expectCategory(() => {
     // TODO bxl
-    expectObj(() => {})
-    expectObj(() => {})
-    expectObj(() => {})
-    expectObj(() => {})
-    expectObj(() => {})
+    expectTextChannel(() => {})
+    expectTextChannel(() => {})
+    expectTextChannel(() => {})
+    expectTextChannel(() => {})
+    expectTextChannel(() => {})
   })
-  expectObj(() => {
+  expectCategory(() => {
     // TODO ams
-    expectObj(() => {})
+    expectTextChannel(() => {})
   })
-  expectObj(() => {})
-  expectObj(() => {})
+  expectCategory(() => {})
+  expectCategory(() => {})
 })
 
 // TODO
-// console.log(formatTestResults(testResults));
+console.log(formatTestOutputs(testResults))
 
 // TODO
 return

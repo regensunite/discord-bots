@@ -22,6 +22,23 @@ const voiceChannelTypes = [
   13, // GUILD_STAGE_VOICE
 ]
 
+const typeToStr = (channelType) => {
+  switch(channelType) {
+    case 0:
+      return 'TEXT CHANNEL'
+    case 5:
+      return 'NEWS CHANNEL'
+    case 2:
+      return 'VOICE CHANNEL'
+    case 13:
+      return 'STAGE CHANNEL'
+    case 4:
+      return 'CATEGORY'
+    default:
+      throw new Error(`channel type ${channelType} is not supported`)
+  }
+}
+
 const naturalOrderChannels = (channel1, channel2) => {
   // text channels appear always above voice channels
   if (textChannelTypes.includes(channel1.type) && voiceChannelTypes.includes(channel2.type)) {
@@ -76,4 +93,5 @@ const nestChannels = (_rawChannels) => {
 
 module.exports = {
   nestChannels,
+  typeToStr,
 }
