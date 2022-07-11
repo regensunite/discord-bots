@@ -1,0 +1,1 @@
+module.exports = (val, defaultVal) => val === undefined ? defaultVal : val

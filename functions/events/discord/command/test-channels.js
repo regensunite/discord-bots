@@ -1,0 +1,69 @@
+const { nestChannels } = require('../../../../utils/channels.js')
+const {
+  runChannelTests,
+  formatTestResults,
+  expectObj,
+  expectCategory,
+  expectTextChannel,
+  expectName,
+} = require('../../../../tests/channels.js')
+const lib = require('lib')({token: process.env.STDLIB_SECRET_TOKEN});
+
+const [
+  _rawChannels
+] = await Promise.all([
+  lib.discord.guilds['@0.2.4'].channels.list({
+    guild_id: `${context.params.event.guild_id}`
+  }),
+]);
+
+const actualChannels = nestChannels(_rawChannels)
+
+const testResults = runChannelTests(actualChannels, () => {
+  // TODO continue test cases
+  
+  expectObj(() => {})
+  expectObj(() => {})
+  expectObj(() => {})
+  expectObj(() => {})
+  expectObj(() => {})
+  expectObj(() => {
+    // TODO main
+    expectObj(() => {})
+    expectObj(() => {})
+  })
+  expectObj(() => {
+    // TODO bxl
+    expectObj(() => {})
+    expectObj(() => {})
+    expectObj(() => {})
+    expectObj(() => {})
+    expectObj(() => {})
+  })
+  expectObj(() => {
+    // TODO ams
+    expectObj(() => {})
+  })
+  expectObj(() => {})
+  expectObj(() => {})
+})
+
+// TODO
+// console.log(formatTestResults(testResults));
+
+// TODO
+return
+
+await lib.discord.channels['@0.3.2'].messages.create({
+  "channel_id": `${context.params.event.channel_id}`,
+  "content": `<@${context.params.event.member.user.id}> ran /${context.params.event.data.name}`,
+  "tts": false,
+  "embeds": [
+    {
+      "type": "rich",
+      "title": `Test Results`,
+      "description": table,
+      "color": 0xff0000, // TODO red if fail, green if success
+    }
+  ]
+});

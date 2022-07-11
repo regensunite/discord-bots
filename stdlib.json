@@ -1,0 +1,31 @@
+{
+  "name": "perspect1ve/regens-unite",
+  "timeout": 10000,
+  "connector": false,
+  "events": {
+    "functions/events/discord/command/list-people.js": {
+      "name": "discord.command",
+      "subtype": {
+        "command": "list-people"
+      }
+    },
+    "functions/events/discord/command/test-channels.js": {
+      "name": "discord.command",
+      "subtype": {
+        "command": "test-channels"
+      }
+    },
+    "functions/events/discord/command/set-bot-status.js": {
+      "name": "discord.command",
+      "subtype": {
+        "command": "set-bot-status"
+      }
+    },
+    "functions/events/discord/command/clear-bot-status.js": {
+      "name": "discord.command",
+      "subtype": {
+        "command": "clear-bot-status"
+      }
+    }
+  }
+}

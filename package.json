@@ -1,0 +1,8 @@
+{
+  "name": "new-project",
+  "author": "perspect1ve",
+  "publish": false,
+  "dependencies": {
+    "lib": "latest"
+  }
+}
