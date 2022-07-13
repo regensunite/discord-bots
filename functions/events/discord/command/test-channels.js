@@ -1,9 +1,12 @@
 const { nestChannels } = require('../../../../utils/channels.js')
 const {
   runChannelTests,
-  formatTestOutputs,
+  formatTestResults,
   expectCategory,
   expectTextChannel,
+  expectNewsChannel,
+  expectVoiceChannel,
+  expectStageChannel,
   expectName,
 } = require('../../../../tests/channels.js')
 const lib = require('lib')({token: process.env.STDLIB_SECRET_TOKEN});
@@ -33,11 +36,11 @@ const testResults = runChannelTests(actualChannels, () => {
   })
   expectCategory(() => {
     // TODO bxl
+    expectNewsChannel(() => {})
     expectTextChannel(() => {})
     expectTextChannel(() => {})
-    expectTextChannel(() => {})
-    expectTextChannel(() => {})
-    expectTextChannel(() => {})
+    expectStageChannel(() => {})
+    expectVoiceChannel(() => {})
   })
   expectCategory(() => {
     // TODO ams
@@ -48,7 +51,7 @@ const testResults = runChannelTests(actualChannels, () => {
 })
 
 // TODO
-console.log(formatTestOutputs(testResults))
+console.log(formatTestResults(testResults))
 
 // TODO
 return

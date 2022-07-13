@@ -71,36 +71,36 @@ const expectName = _wrap(function (specs) {
   // TODO
 })
 
-// TODO
-// TODO test outputs are returned by the test runner 
-const _createTestOutput = (depth, passed, message) => ({
-  depth, // positive integer
-  passed, // boolean
-  message, // string
-})
-
-// TODO
+// create a test context object (used in the stack of the test runner for each nesting level of test cases)
 const _createContext = (objects) => ({
   objects, // array of objects (channels, categories...) under test, each object may have children
   pointer: -1, // positive integer, or -1 if not yet used
   testResults: [], // array of test results
 })
 
-// TODO
-// TODO test results are internal representations
-const _createTestResult = (passed, message) => ({
-  passed, // boolean
+// create a test result (used by test cases to report a pass/fail scenario to the user)
+const _createTestResult = (passed, message, _children = []) => ({
+  passed, // true if test case has been passed, false if test case has failed, null if result of test case depends on children
   message, // string
+  _children, // array of test results
 })
 
+// DISCORD TEST RUNNER 🎉
+// two types of test cases exist:
+// - a "consuming" test case: it advances the pointer of the current context (i.e. it consumes an object under test),
+//                            may run a few test scenarios itself, and passes control to child test cases
+// - a "verifying" test case: it does some checks on the current object under test
+//
+// At the root level (i.e. directly running inside the "specs" callback), only "consuming" test cases are allowed,
+// because an object under test needs to be "consumed" first, before "verifying" test cases can run.
+// "consuming" test cases can be nested, in which case the nested "consuming" test case, will "consume" children
+// of the object currently under test.
 const runChannelTests = (actualNestedSortedChannels, specs) => {
-  // TODO
-  const testOutputs = []
-
-  // TODO
+  // stack containing one context object for every level of nesting that the test runner is currently dealing with
   let contextStack = []
 
-  // TODO
+  // get the context of the object currently under test
+  // NOTE: the last context in the stack is always the context of the current object's children!
   const getCurrentContext = () => {
     if (contextStack.length < 2) {
       throw new Error(`PANIC: expected context stack to have at least 2 contexts, but found ${contextStack.length}. Did you forget to consume an object first?`)
@@ -110,58 +110,58 @@ const runChannelTests = (actualNestedSortedChannels, specs) => {
     return contextStack[contextStack.length - 2]
   }
 
-  // TODO
-  // TODO ORDER PARENT/CHILD IS NOT CORRECT...
+  // close the uppermost context
+  // NOTE: this function is called by the test runner to finalize processing a test case (and all its children)
   const closeContext = (expectedType) => {
     // remove the latest context from the stack
     const closedContext = contextStack.pop()
 
-    console.log('TEMP', contextStack.map(ctx => ctx.objects[ctx.pointer]).map(currObj => currObj.name))
-    
-    // get current depth
-    const closedDepth = contextStack.length
-    const currentDepth = closedDepth - 1
-
-    if (currentDepth >= 0) {
-      const currentContext = contextStack[contextStack.length - 1]
-      const currentObj = currentContext.objects[currentContext.pointer]
-      // TODO message like "expected category, got channel"???
-      // TODO actually verify type
-      testOutputs.push(
-        _createTestOutput(
-          currentDepth,
-          true, // TODO!!!
-          `${typeToStr(expectedType)} '${currentObj.name}'` // TODO!!!
-        )
-      )
-    }
-    
-    // TODO get specs from closedContext
-
+    // decide if the amount of objects matches the amount of "consumptions"
     const expectedObjCount = closedContext.pointer + 1
     const actualObjCount = closedContext.objects.length
     const overshoot = expectedObjCount - actualObjCount
     if (overshoot === 0) {
-      testOutputs.push(_createTestOutput(
-        closedDepth,
+      closedContext.testResults.push(_createTestResult(
         true,
         `child counts match`
       ))
     } else {
-      testOutputs.push(_createTestOutput(
-        closedDepth,
+      closedContext.testResults.push(_createTestResult(
         false,
         `expected ${expectedObjCount} children, got ${actualObjCount} children`
       ))
     }
+
+    // EDGE CASE: when the root context is being closed, the stack will be empty
+    const currentContext = contextStack[contextStack.length - 1]
+    if (currentContext !== undefined) {
+      const currentObj = currentContext.objects[currentContext.pointer]
+
+      // verify object type AND collect test results of children
+      if (currentObj.type === expectedType) {
+        currentContext.testResults.push(_createTestResult(
+          null, // let icon depend on child results
+          `${typeToStr(expectedType)} '${currentObj.name}'`,
+          closedContext.testResults
+        ))
+      } else {
+        currentContext.testResults.push(_createTestResult(
+          false, // this test case has failed for sure
+          `expected a ${typeToStr(expectedType)}, got ${typeToStr(currentObj.type)} '${currentObj.name}'`,
+          closedContext.testResults
+        ))
+      }
+    }
+
+    return closedContext
   }
 
   // create a scope in which the tests can run
-  ;(function () {
+  return (function () {
     // mark current `this` instance, such that specs can verify if they have been called within the scope of the test runner
     this.testRunnerId = RUNNER_ID
 
-    // TODO
+    // function to use when implementing a "consuming" test case
     this.consumeObj = (expectedType, cb) => {
       // get the current context
       const currentContext = contextStack[contextStack.length - 1]
@@ -192,7 +192,8 @@ const runChannelTests = (actualNestedSortedChannels, specs) => {
       }
     }
 
-    // TODO
+    // TODO what happens if I call this at the root level?
+    // function to use when implementing a "verifying" test case
     this.getCurrentObj = () => {
       const currentContext = getCurrentContext()
 
@@ -204,8 +205,7 @@ const runChannelTests = (actualNestedSortedChannels, specs) => {
       return currentObj
     }
 
-    // TODO
-    // TODO USE THIS FUNC
+    // all test cases should call this method to report a pass/fail scenario
     this.pushTestResult = (passed, message) => {
       getCurrentContext().testResults.push(_createTestResult(passed, message))
     }
@@ -217,7 +217,7 @@ const runChannelTests = (actualNestedSortedChannels, specs) => {
     specs()
 
     // verify and clean up root context
-    closeContext(-1)
+    const rootContext = closeContext(-1)
 
     // sanity check: no lingering contexts
     if (contextStack.length !== 0) {
@@ -225,23 +225,70 @@ const runChannelTests = (actualNestedSortedChannels, specs) => {
         `PANIC: test run ended, but context stack is NOT empty (contains ${contextStack.length} contexts)`
       )
     }
-  })()
 
-  return testOutputs
+    // return the root test results (contains nested test results)
+    return rootContext.testResults 
+  })()
 }
 
-const formatTestOutputs = (testOutputs) => {
+const formatTestResults = (testResults) => {
+  const flattenTestResults = (input, depth = 0, initial = []) => input.reduce((output, currentTestResult) => {
+    const childDepth = depth + 1
+
+    const flattenedChildren = flattenTestResults(
+      currentTestResult._children,
+      childDepth
+    )
+
+    const directChildren = flattenedChildren.filter(
+      (childTestResult) => childTestResult.depth === childDepth
+    )
+
+    // NOTE: while we only read the pass counts of direct children, those counts already include the pass counts of their children etc.
+    const childrenPassCount = directChildren.reduce(
+      (count, childTestResult) => count + childTestResult.passCount,
+      0
+    )
+
+    // NOTE: while we only read the total counts of direct children, those counts already include the total counts of their children etc.
+    const childrenTotalCount = directChildren.reduce(
+      (count, childTestResult) => count + childTestResult.totalCount,
+      0
+    )
+
+    const passed =
+      currentTestResult.passed === null
+        ? childrenPassCount === childrenTotalCount
+        : currentTestResult.passed
+
+    return [
+      ...output,
+      {
+        ...currentTestResult,
+        passCount: childrenPassCount + (passed ? 1 : 0), // total count of children, plus one for the current test result IF the current test result passed
+        totalCount: childrenTotalCount + 1, // total count of children, plus one for the current test result
+        passed,
+        depth, // since we're flattening everything, keep track of the original depth (for indentation)
+        _children: undefined, // children shouldn't be in the output
+      },
+      ...flattenedChildren,
+    ]
+  }, initial)
+
+  const flattenedTestResults = flattenTestResults(testResults)
+
   return createTable(
-    testOutputs,
+    flattenedTestResults,
     [
-      // TODO connect icon with text (i.e. one column)
-      (testResult) => ({
-        paddingChar: '.',
-        snippets: [
-          ' '.repeat(3 * testResult.depth) + (testResult.passed ? '✅' : '❌') + '...',
-        ],
-      }),
-      (testResult) => String(testResult.message),
+      (testResult) => {
+        const icon = testResult.passed ? '✅' : '❌'
+        const indentation = ' '.repeat(3 * testResult.depth)
+
+        return [`${indentation}${icon} ${testResult.message}`]
+      },
+      (testResult) => {
+        return [`(${testResult.passCount}/${testResult.totalCount})`]
+      },
     ],
     {
       horizontalSeparator: '',
@@ -255,7 +302,7 @@ const formatTestOutputs = (testOutputs) => {
 
 module.exports = {
   runChannelTests,
-  formatTestOutputs,
+  formatTestResults,
   expectCategory,
   expectTextChannel,
   expectNewsChannel,
