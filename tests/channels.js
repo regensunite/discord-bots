@@ -1,6 +1,6 @@
 const { createTable } = require('../utils/table.js')
 const { typeToStr } = require('../utils/channels.js')
-const range = require('../utils/range.js')
+const { AssertionError, expect } = require('chai');
 
 // string to identify that a given `this` variable was initialized by function #runChannelTests
 const RUNNER_ID = 'ctr_' + Math.floor(Math.random() * Math.pow(10, 6));
@@ -37,6 +37,26 @@ function _wrap(def) {
   }
 }
 
+// helper function to create "verifying" test cases with chai
+// NOTE: needs to be a regular function, for `this` to point to the test runner
+function _chaiTestCase (runChai, getPassMessage, getFailMessage) {
+  try {
+    // run the test case(s)
+    runChai()
+
+    // test case passed
+    this.pushTestResult(true, getPassMessage())
+  } catch (e) {
+    // rethrow errors that we do not care about
+    if (!(e instanceof AssertionError)) {
+      throw e
+    }
+
+    // test case failed
+    this.pushTestResult(false, getFailMessage(e))
+  }
+}
+
 const expectCategory = _wrap(function (specs) {
   this.consumeObj(4, () => {
     specs()
@@ -67,8 +87,16 @@ const expectStageChannel = _wrap(function (specs) {
   })
 })
 
-const expectName = _wrap(function (specs) {
-  // TODO
+const expectName = _wrap(function (expectedName) {
+  const currentObj = this.getCurrentObj()
+
+  const typeStr = typeToStr(currentObj.type).toLocaleLowerCase()
+
+  _chaiTestCase(
+    () => expect(currentObj.name).to.equal(expectedName, `${typeStr} name`),
+    () => `${typeStr} name is '${expectedName}'`, // category name is 'EXPECTED'
+    (e) => e.message // category name: expected 'ACTUAL' to equal 'EXPECTED'
+  )
 })
 
 // create a test context object (used in the stack of the test runner for each nesting level of test cases)
@@ -98,17 +126,6 @@ const _createTestResult = (passed, message, _children = []) => ({
 const runChannelTests = (actualNestedSortedChannels, specs) => {
   // stack containing one context object for every level of nesting that the test runner is currently dealing with
   let contextStack = []
-
-  // get the context of the object currently under test
-  // NOTE: the last context in the stack is always the context of the current object's children!
-  const getCurrentContext = () => {
-    if (contextStack.length < 2) {
-      throw new Error(`PANIC: expected context stack to have at least 2 contexts, but found ${contextStack.length}. Did you forget to consume an object first?`)
-    }
-
-    // NOTE: upper element in stack is child context, following element is current context
-    return contextStack[contextStack.length - 2]
-  }
 
   // close the uppermost context
   // NOTE: this function is called by the test runner to finalize processing a test case (and all its children)
@@ -158,6 +175,7 @@ const runChannelTests = (actualNestedSortedChannels, specs) => {
 
   // create a scope in which the tests can run
   return (function () {
+    // TODO FIXME "this" is global scope...
     // mark current `this` instance, such that specs can verify if they have been called within the scope of the test runner
     this.testRunnerId = RUNNER_ID
 
@@ -192,22 +210,28 @@ const runChannelTests = (actualNestedSortedChannels, specs) => {
       }
     }
 
-    // TODO what happens if I call this at the root level?
     // function to use when implementing a "verifying" test case
     this.getCurrentObj = () => {
-      const currentContext = getCurrentContext()
-
-      const currentObj = currentContext.objects[currentContext.pointer]
+      const parentContext = contextStack[contextStack.length - 2]
+      const currentObj = parentContext?.objects[parentContext?.pointer]
       if (currentObj === undefined) {
-        throw new Error(`PANIC: could not retrieve current object (undefined)`)
+        throw new Error(`PANIC: could not retrieve current object (undefined). Did you forget to consume an object first?`)
       }
 
-      return currentObj
+      return {
+        ...currentObj, // best-effort attempt at isolating, in case a test case goes rogue and modifies the current object
+        _children: undefined, // shield children from "verifying" tests (children can be tested by nesting test cases)
+      }
     }
 
     // all test cases should call this method to report a pass/fail scenario
     this.pushTestResult = (passed, message) => {
-      getCurrentContext().testResults.push(_createTestResult(passed, message))
+      const currentContext = contextStack[contextStack.length - 1]
+      if (currentContext?.testResults === undefined) {
+        throw new Error(`PANIC: could not retrieve test results of current context (undefined)`)
+      }
+
+      currentContext.testResults.push(_createTestResult(passed, message))
     }
 
     // initialize stack
@@ -240,21 +264,7 @@ const formatTestResults = (testResults) => {
       childDepth
     )
 
-    const directChildren = flattenedChildren.filter(
-      (childTestResult) => childTestResult.depth === childDepth
-    )
-
-    // NOTE: while we only read the pass counts of direct children, those counts already include the pass counts of their children etc.
-    const childrenPassCount = directChildren.reduce(
-      (count, childTestResult) => count + childTestResult.passCount,
-      0
-    )
-
-    // NOTE: while we only read the total counts of direct children, those counts already include the total counts of their children etc.
-    const childrenTotalCount = directChildren.reduce(
-      (count, childTestResult) => count + childTestResult.totalCount,
-      0
-    )
+    const [childrenPassCount, _, childrenTotalCount] = testCounts(flattenedChildren, childDepth)
 
     const passed =
       currentTestResult.passed === null
@@ -275,23 +285,46 @@ const formatTestResults = (testResults) => {
     ]
   }, initial)
 
+  const testCounts = (flattenedTestResults, depth = 0) => {
+    const testResultsAtDepth = flattenedTestResults.filter(
+      (testResult) => testResult.depth === depth
+    )
+
+    // NOTE: while we only read the pass counts at a given depth, those counts already include the pass counts of their children etc.
+    const passCount = testResultsAtDepth.reduce(
+      (count, testResult) => count + testResult.passCount, 0
+    )
+
+    // NOTE: while we only read the total counts at a given depth, those counts already include the total counts of their children etc.
+    const totalCount = testResultsAtDepth.reduce(
+      (count, testResult) => count + testResult.totalCount, 0
+    )
+
+    return [
+      passCount, // pass count
+      totalCount - passCount, // fail count
+      totalCount, // total count
+    ]
+  }
+
   const flattenedTestResults = flattenTestResults(testResults)
 
-  return createTable(
+  const [passCount, failCount, totalCount] = testCounts(flattenedTestResults)
+
+  return `pass: ${passCount} fail: ${failCount} total: ${totalCount} verdict: ${failCount > 0 ? '❌' : '✅'}\n` + createTable(
     flattenedTestResults,
     [
       (testResult) => {
         const icon = testResult.passed ? '✅' : '❌'
         const indentation = ' '.repeat(3 * testResult.depth)
 
-        return [`${indentation}${icon} ${testResult.message}`]
-      },
-      (testResult) => {
-        return [`(${testResult.passCount}/${testResult.totalCount})`]
+        return [
+          `${indentation}${icon} (${testResult.passCount}/${testResult.totalCount}) ${testResult.message}`,
+        ]
       },
     ],
     {
-      horizontalSeparator: '',
+      horizontalSeparator: ' ',
       firstVerticalSeparator: '',
       verticalSeparator: ' ',
       lastVerticalSeparator: '',

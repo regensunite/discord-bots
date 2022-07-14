@@ -105,7 +105,7 @@ const createTable = (rows, columnGenerators, tableSettings) => {
   )
   
   const adjustRepeatHorizonalSeparatorBase = (separator) => {
-    if (separator.length < 1) {
+    if (!separator) {
       return 0
     }
     
@@ -135,12 +135,12 @@ const createTable = (rows, columnGenerators, tableSettings) => {
         })
         .join(`\n`)
     })
-    .join(`\n${settings.horizontalSeparator.repeat(repeatHorizontalSeparator)}\n`)
+    .join(settings.horizontalSeparator === null ? '\n' : `\n${settings.horizontalSeparator.repeat(repeatHorizontalSeparator)}\n`)
     
   return [
-    settings.firstHorizontalSeparator.repeat(repeatFirstHorizontalSeparator),
+    settings.firstHorizontalSeparator === null ? '\n' : settings.firstHorizontalSeparator.repeat(repeatFirstHorizontalSeparator),
     rowStr,
-    settings.lastHorizontalSeparator.repeat(repeatLastHorizontalSeparator),
+    settings.lastHorizontalSeparator === null ? '\n' :settings.lastHorizontalSeparator.repeat(repeatLastHorizontalSeparator),
   ].join('\n')
 }
 

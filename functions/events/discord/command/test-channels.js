@@ -8,7 +8,8 @@ const {
   expectVoiceChannel,
   expectStageChannel,
   expectName,
-} = require('../../../../tests/channels.js')
+} = require('../../../../tests/channels.js');
+const { fileDateTime } = require('../../../../utils/date.js');
 const lib = require('lib')({token: process.env.STDLIB_SECRET_TOKEN});
 
 const [
@@ -23,7 +24,7 @@ const actualChannels = nestChannels(_rawChannels)
 
 const testResults = runChannelTests(actualChannels, () => {
   // TODO continue test cases
-  
+
   expectTextChannel(() => {})
   expectTextChannel(() => {})
   expectTextChannel(() => {})
@@ -31,6 +32,9 @@ const testResults = runChannelTests(actualChannels, () => {
   expectCategory(() => {})
   expectCategory(() => {
     // TODO main
+    // expectName('aaa')
+    expectName('━━ Main Garden ━━')
+
     expectTextChannel(() => {})
     expectTextChannel(() => {})
   })
@@ -50,22 +54,15 @@ const testResults = runChannelTests(actualChannels, () => {
   expectCategory(() => {})
 })
 
-// TODO
 console.log(formatTestResults(testResults))
 
-// TODO
-return
-
 await lib.discord.channels['@0.3.2'].messages.create({
-  "channel_id": `${context.params.event.channel_id}`,
-  "content": `<@${context.params.event.member.user.id}> ran /${context.params.event.data.name}`,
-  "tts": false,
-  "embeds": [
+  channel_id: context.params.event.channel_id,
+  content: `<@${context.params.event.member.user.id}> ran /${context.params.event.data.name}`,
+  attachments: [
     {
-      "type": "rich",
-      "title": `Test Results`,
-      "description": table,
-      "color": 0xff0000, // TODO red if fail, green if success
-    }
-  ]
-});
+      filename: `test-results_${fileDateTime(new Date())}.txt`,
+      file: Buffer.from(formatTestResults(testResults)),
+    },
+  ],
+})

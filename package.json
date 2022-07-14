@@ -3,6 +3,7 @@
   "author": "perspect1ve",
   "publish": false,
   "dependencies": {
-    "lib": "latest"
+    "lib": "latest",
+    "chai": "~4.3.6"
   }
 }
