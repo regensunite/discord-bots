@@ -15,7 +15,7 @@ function _assertTestRunnerPresent() {
 
 // used to define expectation functions; can trigger code before and after the expectation
 // NOTE: needs to be a regular function, for `this` to point to the global scope
-function _wrap(def) {
+function _wrap(def, generatesTestResults = true) {
   // sanity check: def should be a function
   if (typeof def !== 'function') {
     throw new Error(`first argument should be a (regular) function`);
@@ -31,7 +31,20 @@ function _wrap(def) {
     _assertTestRunnerPresent()
     
     // run the expecation function
+    const testResultCountBefore = this[RUNNER_KEY].peekContext().testResults.length
     def(...args)
+    const testResultCountAfter = this[RUNNER_KEY].peekContext().testResults.length
+    const newTestResultCount = testResultCountAfter - testResultCountBefore
+
+    if (generatesTestResults && newTestResultCount <= 0) {
+      console.error('top context before aborting', this[RUNNER_KEY].peekContext())
+      throw new Error('test case did not push any test results, aborting...')
+    }
+
+    if (!generatesTestResults && newTestResultCount !== 0) {
+      console.error('top context before aborting', this[RUNNER_KEY].peekContext())
+      throw new Error(`function is not supposed to generate test results, but generated ${newTestResultCount}`)
+    }
     
     // run code after expectation function
   }
@@ -59,7 +72,7 @@ function _chaiTestCase (runChai, getPassMessage, getFailMessage) {
 
 const logCurrentObj = _wrap(function (label) {
   console.log(label, this[RUNNER_KEY].getCurrentObj())
-})
+}, false) // NOTE: this function does NOT generate test results
 
 const expectCategory = _wrap(function (specs) {
   this[RUNNER_KEY].consumeObj(4, () => {
@@ -127,7 +140,7 @@ const _createTestResult = (passed, message, _children = []) => ({
 // because an object under test needs to be "consumed" first, before "verifying" test cases can run.
 // "consuming" test cases can be nested, in which case the nested "consuming" test case, will "consume" children
 // of the object currently under test.
-const runChannelTests = (actualNestedSortedChannels, specs) => {
+const runChannelTests = (guild, actualNestedSortedChannels, specs) => {
   // stack containing one context object for every level of nesting that the test runner is currently dealing with
   let contextStack = []
 
@@ -182,6 +195,16 @@ const runChannelTests = (actualNestedSortedChannels, specs) => {
     // create the test runner object in the global scope
     this[RUNNER_KEY] = {}
 
+    // convenience function in case a test case needs access to the latest context in the stack
+    // try to avoid this unless really necessary
+    this[RUNNER_KEY].peekContext = () => {
+      const topContext = contextStack[contextStack.length - 1]
+      if (topContext === undefined) {
+        throw new Error('PANIC: no context available')
+      }
+      return topContext
+    }
+
     // function to use when implementing a "consuming" test case
     this[RUNNER_KEY].consumeObj = (expectedType, cb) => {
       // get the current context
@@ -225,6 +248,14 @@ const runChannelTests = (actualNestedSortedChannels, specs) => {
         ...currentObj, // best-effort attempt at isolating, in case a test case goes rogue and modifies the current object
         _children: undefined, // shield children from "verifying" tests (children can be tested by nesting test cases)
       }
+    }
+
+    // get the guild (useful to implement some "verifying" test cases)
+    this[RUNNER_KEY].getGuild = () => {
+      if (!guild) {
+        throw new Error(`PANIC: guild was not provided`)
+      }
+      return guild
     }
 
     // all test cases should call this method to report a pass/fail scenario

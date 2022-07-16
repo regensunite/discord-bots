@@ -13,8 +13,15 @@ const { fileDateTime } = require('../../../../utils/date.js');
 const lib = require('lib')({token: process.env.STDLIB_SECRET_TOKEN});
 
 const [
-  _rawChannels
+  guild,
+  _rawChannels,
 ] = await Promise.all([
+  // get guild
+  lib.discord.guilds['@0.2.4'].retrieve({
+    guild_id: `${context.params.event.guild_id}`,
+    with_counts: false
+  }),
+  // get channels
   lib.discord.guilds['@0.2.4'].channels.list({
     guild_id: `${context.params.event.guild_id}`
   }),
@@ -22,7 +29,7 @@ const [
 
 const actualChannels = nestChannels(_rawChannels)
 
-const testResults = runChannelTests(actualChannels, () => {
+const testResults = runChannelTests(guild, actualChannels, () => {
   const updatesIcon = `📣`
   const generalIcon = `🌈`
   const meetingRoomIcon = `🎤`
