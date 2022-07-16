@@ -2,19 +2,19 @@ const { createTable } = require('../utils/table.js')
 const { typeToStr } = require('../utils/channels.js')
 const { AssertionError, expect } = require('chai');
 
-// string to identify that a given `this` variable was initialized by function #runChannelTests
-const RUNNER_ID = 'ctr_' + Math.floor(Math.random() * Math.pow(10, 6));
+// global namespace of the test runner (key added to global scrope, under which test runner public API resides)
+const RUNNER_KEY = 'ctrK_' + Math.floor(Math.random() * Math.pow(10, 6));
 
 // each expectation function should call this function to avoid scoping mistakes
-// NOTE: needs to be a regular function, for `this` to point to the test runner
+// NOTE: needs to be a regular function, for `this` to point to the global scope
 function _assertTestRunnerPresent() {
-  if (this.testRunnerId !== RUNNER_ID) {
-    throw new Error(`not in test runner scope`);
+  if (this[RUNNER_KEY] === undefined) {
+    throw new Error(`not in test runner scope`)
   }
 }
 
 // used to define expectation functions; can trigger code before and after the expectation
-// NOTE: needs to be a regular function, for `this` to point to the test runner
+// NOTE: needs to be a regular function, for `this` to point to the global scope
 function _wrap(def) {
   // sanity check: def should be a function
   if (typeof def !== 'function') {
@@ -38,14 +38,14 @@ function _wrap(def) {
 }
 
 // helper function to create "verifying" test cases with chai
-// NOTE: needs to be a regular function, for `this` to point to the test runner
+// NOTE: needs to be a regular function, for `this` to point to the global scope
 function _chaiTestCase (runChai, getPassMessage, getFailMessage) {
   try {
     // run the test case(s)
     runChai()
 
     // test case passed
-    this.pushTestResult(true, getPassMessage())
+    this[RUNNER_KEY].pushTestResult(true, getPassMessage())
   } catch (e) {
     // rethrow errors that we do not care about
     if (!(e instanceof AssertionError)) {
@@ -53,42 +53,46 @@ function _chaiTestCase (runChai, getPassMessage, getFailMessage) {
     }
 
     // test case failed
-    this.pushTestResult(false, getFailMessage(e))
+    this[RUNNER_KEY].pushTestResult(false, getFailMessage(e))
   }
 }
 
+const logCurrentObj = _wrap(function (label) {
+  console.log(label, this[RUNNER_KEY].getCurrentObj())
+})
+
 const expectCategory = _wrap(function (specs) {
-  this.consumeObj(4, () => {
+  this[RUNNER_KEY].consumeObj(4, () => {
     specs()
   })
 })
 
 const expectTextChannel = _wrap(function (specs) {
-  this.consumeObj(0, () => {
+  this[RUNNER_KEY].consumeObj(0, () => {
     specs()
   })
 })
 
 const expectNewsChannel = _wrap(function (specs) {
-  this.consumeObj(5, () => {
+  this[RUNNER_KEY].consumeObj(5, () => {
     specs()
   })
 })
 
 const expectVoiceChannel = _wrap(function (specs) {
-  this.consumeObj(2, () => {
+  this[RUNNER_KEY].consumeObj(2, () => {
     specs()
   })
 })
 
 const expectStageChannel = _wrap(function (specs) {
-  this.consumeObj(13, () => {
+  this[RUNNER_KEY].consumeObj(13, () => {
     specs()
   })
 })
 
 const expectName = _wrap(function (expectedName) {
-  const currentObj = this.getCurrentObj()
+  const currentObj = this[RUNNER_KEY].getCurrentObj()
 
   const typeStr = typeToStr(currentObj.type).toLocaleLowerCase()
 
@@ -173,14 +177,13 @@ const runChannelTests = (actualNestedSortedChannels, specs) => {
     return closedContext
   }
 
-  // create a scope in which the tests can run
+  // access the global scope via the `this` keyword of an immediately invoked function expression
   return (function () {
-    // TODO FIXME "this" is global scope...
-    // mark current `this` instance, such that specs can verify if they have been called within the scope of the test runner
-    this.testRunnerId = RUNNER_ID
+    // create the test runner object in the global scope
+    this[RUNNER_KEY] = {}
 
     // function to use when implementing a "consuming" test case
-    this.consumeObj = (expectedType, cb) => {
+    this[RUNNER_KEY].consumeObj = (expectedType, cb) => {
       // get the current context
       const currentContext = contextStack[contextStack.length - 1]
       if (currentContext === undefined) {
@@ -211,7 +214,7 @@ const runChannelTests = (actualNestedSortedChannels, specs) => {
     }
 
     // function to use when implementing a "verifying" test case
-    this.getCurrentObj = () => {
+    this[RUNNER_KEY].getCurrentObj = () => {
       const parentContext = contextStack[contextStack.length - 2]
       const currentObj = parentContext?.objects[parentContext?.pointer]
       if (currentObj === undefined) {
@@ -225,7 +228,7 @@ const runChannelTests = (actualNestedSortedChannels, specs) => {
     }
 
     // all test cases should call this method to report a pass/fail scenario
-    this.pushTestResult = (passed, message) => {
+    this[RUNNER_KEY].pushTestResult = (passed, message) => {
       const currentContext = contextStack[contextStack.length - 1]
       if (currentContext?.testResults === undefined) {
         throw new Error(`PANIC: could not retrieve test results of current context (undefined)`)
@@ -249,6 +252,9 @@ const runChannelTests = (actualNestedSortedChannels, specs) => {
         `PANIC: test run ended, but context stack is NOT empty (contains ${contextStack.length} contexts)`
       )
     }
+
+    // clean up the global scope
+    this[RUNNER_KEY] = undefined
 
     // return the root test results (contains nested test results)
     return rootContext.testResults 
@@ -336,6 +342,7 @@ const formatTestResults = (testResults) => {
 module.exports = {
   runChannelTests,
   formatTestResults,
+  logCurrentObj,
   expectCategory,
   expectTextChannel,
   expectNewsChannel,

@@ -2,11 +2,11 @@ const { nestChannels } = require('../../../../utils/channels.js')
 const {
   runChannelTests,
   formatTestResults,
+  logCurrentObj,
   expectCategory,
   expectTextChannel,
   expectNewsChannel,
   expectVoiceChannel,
-  expectStageChannel,
   expectName,
 } = require('../../../../tests/channels.js');
 const { fileDateTime } = require('../../../../utils/date.js');
@@ -35,9 +35,12 @@ const testResults = runChannelTests(actualChannels, () => {
 
   expectCategory(() => {
     expectName(`━━ START HERE ━━`)
+    logCurrentObj('sh co')
+
     const startHereIcon = `👋`
     expectTextChannel(() => {
       expectName(`${startHereIcon}🪂welcome`)
+      logCurrentObj('shW co')
     })
     expectTextChannel(() => {
       expectName(`${startHereIcon}🤩introduce-yourself`)
