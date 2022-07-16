@@ -23,35 +23,169 @@ const [
 const actualChannels = nestChannels(_rawChannels)
 
 const testResults = runChannelTests(actualChannels, () => {
-  // TODO continue test cases
+  const updatesIcon = `📣`
+  const generalIcon = `🌈`
+  const meetingRoomIcon = `🎤`
+  const meetingNotesIcon = `🗒`
+  const financeIcon = `🧮`
+  const facilitatorsIcon = `🙋`
+  const logisticsIcon = `✨`
+  const docsIcon = `📗`
+  const prIcon = `📤`
 
-  expectTextChannel(() => {})
-  expectTextChannel(() => {})
-  expectTextChannel(() => {})
-  expectTextChannel(() => {})
-  expectCategory(() => {})
   expectCategory(() => {
-    // TODO main
-    // expectName('aaa')
-    expectName('━━ Main Garden ━━')
+    expectName(`━━ START HERE ━━`)
+    const startHereIcon = `👋`
+    expectTextChannel(() => {
+      expectName(`${startHereIcon}🪂welcome`)
+    })
+    expectTextChannel(() => {
+      expectName(`${startHereIcon}🤩introduce-yourself`)
+    })
+    expectTextChannel(() => {
+      expectName(`${startHereIcon}❔info-booth`)
+    })
+    expectTextChannel(() => {
+      expectName(`${startHereIcon}💥get-involved`)
+    })
+  })
 
-    expectTextChannel(() => {})
-    expectTextChannel(() => {})
-  })
   expectCategory(() => {
-    // TODO bxl
-    expectNewsChannel(() => {})
-    expectTextChannel(() => {})
-    expectTextChannel(() => {})
-    expectStageChannel(() => {})
-    expectVoiceChannel(() => {})
+    expectName(`━━ MAIN GARDEN ━━`)
+    const mainGardenIcon = `🌱`
+    expectNewsChannel(() => {
+      expectName(`${mainGardenIcon}${updatesIcon}announcements`)
+    })
+    expectTextChannel(() => {
+      expectName(`${mainGardenIcon}${generalIcon}general`)
+    })
+    expectTextChannel(() => {
+      expectName(`${mainGardenIcon}🙏praise`)
+    })
+    expectTextChannel(() => {
+      expectName(`${mainGardenIcon}💡ideas`)
+    })
+    expectTextChannel(() => {
+      expectName(`${mainGardenIcon}🤝proposals`)
+    })
+    expectTextChannel(() => {
+      expectName(`${mainGardenIcon}📸pictures`)
+    })
+    expectVoiceChannel(() => {
+      expectName(`${mainGardenIcon}${meetingRoomIcon}meeting-room`)
+    })
   })
+
   expectCategory(() => {
-    // TODO ams
-    expectTextChannel(() => {})
+    expectName(`━━ BRUSSELS ━━`)
+    const brusselsIcon = `🇧🇪`
+    expectTextChannel(() => {
+      expectName(`${brusselsIcon}${updatesIcon}updates`)
+    })
+    expectTextChannel(() => {
+      expectName(`${brusselsIcon}${meetingNotesIcon}meeting-notes`)
+    })
+    expectTextChannel(() => {
+      expectName(`${brusselsIcon}${generalIcon}general`)
+    })
+    expectTextChannel(() => {
+      expectName(`${brusselsIcon}${financeIcon}finance`)
+    })
+    expectTextChannel(() => {
+      expectName(`${brusselsIcon}${facilitatorsIcon}facilitators`)
+    })
+    expectTextChannel(() => {
+      expectName(`${brusselsIcon}${prIcon}pr`)
+    })
+    expectTextChannel(() => {
+      expectName(`${brusselsIcon}${logisticsIcon}logistics`)
+    })
+    expectTextChannel(() => {
+      expectName(`${brusselsIcon}${docsIcon}docs`)
+    })
+    expectVoiceChannel(() => {
+      expectName(`${brusselsIcon}${meetingRoomIcon}meeting-room`)
+    })
   })
-  expectCategory(() => {})
-  expectCategory(() => {})
+
+  expectCategory(() => {
+    expectName(`━━ BOGOTA ━━`)
+    const bogotaIcon = `🇨🇴`
+    expectTextChannel(() => {
+      expectName(`${bogotaIcon}${updatesIcon}updates`)
+    })
+    expectTextChannel(() => {
+      expectName(`${bogotaIcon}${meetingNotesIcon}meeting-notes`)
+    })
+    expectTextChannel(() => {
+      expectName(`${bogotaIcon}${generalIcon}general`)
+    })
+    expectTextChannel(() => {
+      expectName(`${bogotaIcon}${financeIcon}finance`)
+    })
+    expectTextChannel(() => {
+      expectName(`${bogotaIcon}${facilitatorsIcon}facilitators`)
+    })
+    expectTextChannel(() => {
+      expectName(`${bogotaIcon}${prIcon}pr`)
+    })
+    expectTextChannel(() => {
+      expectName(`${bogotaIcon}${logisticsIcon}logistics`)
+    })
+    expectTextChannel(() => {
+      expectName(`${bogotaIcon}${docsIcon}docs`)
+    })
+    expectVoiceChannel(() => {
+      expectName(`${bogotaIcon}${meetingRoomIcon}meeting-room`)
+    })
+  })
+
+  expectCategory(() => {
+    expectName(`━━ AMSTERDAM ━━`)
+    const bogotaIcon = `🇳🇱`
+    expectTextChannel(() => {
+      expectName(`${bogotaIcon}${updatesIcon}updates`)
+    })
+    expectTextChannel(() => {
+      expectName(`${bogotaIcon}${meetingNotesIcon}meeting-notes`)
+    })
+    expectTextChannel(() => {
+      expectName(`${bogotaIcon}${generalIcon}general`)
+    })
+    expectTextChannel(() => {
+      expectName(`${bogotaIcon}${financeIcon}finance`)
+    })
+    expectTextChannel(() => {
+      expectName(`${bogotaIcon}${facilitatorsIcon}facilitators`)
+    })
+    expectTextChannel(() => {
+      expectName(`${bogotaIcon}${prIcon}pr`)
+    })
+    expectTextChannel(() => {
+      expectName(`${bogotaIcon}${logisticsIcon}logistics`)
+    })
+    expectTextChannel(() => {
+      expectName(`${bogotaIcon}${docsIcon}docs`)
+    })
+    expectVoiceChannel(() => {
+      expectName(`${bogotaIcon}${meetingRoomIcon}meeting-room`)
+    })
+  })
+
+  expectCategory(() => {
+    expectName(`━━ ADMIN ━━`)
+    expectTextChannel(() => {
+      expectName(`admin-only`)
+    })
+  })
+
+  expectCategory(() => {
+    expectName(`━━ ARCHIVE ━━`)
+    const archiveIcon = `🗄`
+    expectTextChannel(() => {
+      expectName(`${archiveIcon}${archiveIcon}explore-archive`)
+    })
+  })
 })
 
 console.log(formatTestResults(testResults))
