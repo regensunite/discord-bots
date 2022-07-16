@@ -7,7 +7,7 @@ const {
 const { createTable } = require('../table.js')
 const { markFromEnd } = require('../mark.js')
 
-const logMemberPermissions = (members, guild, channel, markerPos, logBase = true, logOverwrite = true, logFinal = true) => {
+const logMemberPermissions = (members, guild, channel, markerPos) => {
   const rows = members.sort((m1, m2) => compareStr(m1.user.username, m2.user.username))
   const tableStr = createTable(rows, [
     // column 1: member name

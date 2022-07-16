@@ -34,7 +34,8 @@ const [
   }),
 ]);
 
-// TODO
+// always log to help debugging in case something goes wrong
+// NOTE: marker pos 1O = VIEW_CHANNEL
 logMemberPermissions(members, guild, channel, 10)
 
 const listItems = members
