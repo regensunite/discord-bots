@@ -1,7 +1,7 @@
 const { compareStr } = require('../compare.js')
 const {
   permissionBitsToString,
-  calculateBasePermissions,
+  calculateBasePermissionsForMember,
   calculateFinalOverwrites,
 } = require('./permissions.js')
 const { createTable } = require('../table.js')
@@ -19,7 +19,7 @@ const logMemberPermissions = (members, guild, channel, markerPos) => {
     ],
     // column 3: bits
     (member) => {
-      const basePermissions = calculateBasePermissions(member, guild)
+      const basePermissions = calculateBasePermissionsForMember(member, guild)
       const channelPermissions = calculateFinalOverwrites(basePermissions, member, channel)
       return [
         `${markFromEnd(permissionBitsToString(basePermissions), markerPos)}`,

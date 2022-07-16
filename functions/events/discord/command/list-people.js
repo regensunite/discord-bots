@@ -1,7 +1,5 @@
 const {
   isBitSet,
-  permissionCount,
-  calculateBasePermissions,
   calculatePermissions,
   flags,
 } = require('../../../../utils/discord/permissions.js')

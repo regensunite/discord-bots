@@ -45,6 +45,16 @@ const getRoleById = (roles, roleId) => {
   return role
 }
 
+const getRoleByName = (roles, roleName) => {
+  const role = roles.find(role => role.name === roleName)
+  
+  if (role === undefined) {
+    throw new Error(`could not find role with name '${roleName}'`);
+  }
+  
+  return role
+}
+
 // NOTE: overwrite may not exist (undefined)
 const getOverwriteById = (overwrites, overwriteId) => overwrites.find(overwrite => overwrite.id === overwriteId)
 
@@ -67,29 +77,36 @@ const getMemberOverwriteById = (overwrites, memberId) => {
 }
 
 // implemented as described on: https://discord.com/developers/docs/topics/permissions#permissions-bitwise-permission-flags
-const calculateBasePermissions = (member, guild) => {
+const calculateRoleBasePermissions = (guild, roleIds) => {
+  assertDiscordIdIterable(roleIds)
+
+  // NOTE: id of @everyone role and id of guild are the same
+  const everyoneRole = getRoleById(guild.roles, guild.id)
+
+  // NOTE: start with the permissions of @everyone (baseline)
+  //       and grant extra permissions based on the role(s)
+  let permissions = BigInt(everyoneRole.permissions)
+  for (const roleId of roleIds) {
+    const role = getRoleById(guild.roles, roleId)
+    permissions |= BigInt(role.permissions)
+  }
+  
+  // NOTE: grant all permissions if ADMINISTRATOR permission is active
+  if (isBitSet(permissions, flags.ADMINISTRATOR)) {
+    return ALL_PERMISSIONS
+  }
+
+  return permissions
+}
+
+// implemented as described on: https://discord.com/developers/docs/topics/permissions#permissions-bitwise-permission-flags
+const calculateBasePermissionsForMember = (member, guild) => {
   if (member.user.id === guild.owner_id) {
     // NOTE: owner can do everything in the server
     return ALL_PERMISSIONS
   }
   
-  // NOTE: id of @everyone role and id of guild are the same
-  const everyoneRole = getRoleById(guild.roles, guild.id)
-  
-  // NOTE: start with the permissions of @everyone (baseline)
-  //       and grant extra permissions based on the member's roles
-  let permissions = BigInt(everyoneRole.permissions)
-  for (const roleId of member.roles) {
-    const role = getRoleById(guild.roles, roleId)
-    permissions |= BigInt(role.permissions)
-  }
-  
-  // NOTE: grant all permissions if member is an ADMINISTRATOR
-  if (isBitSet(permissions, flags.ADMINISTRATOR)) {
-    return ALL_PERMISSIONS
-  }
-  
-  return permissions
+  return calculateRoleBasePermissions(guild, member.roles)
 };
 
 // implemented as described on: https://discord.com/developers/docs/topics/permissions#permissions-bitwise-permission-flags
@@ -140,7 +157,7 @@ const calculateFinalOverwrites = (basePermissions, member, channel) => {
 
 // implemented as described on: https://discord.com/developers/docs/topics/permissions#permissions-bitwise-permission-flags
 const calculatePermissions = (member, guild, channel) => {
-  const basePermissions = calculateBasePermissions(member, guild)
+  const basePermissions = calculateBasePermissionsForMember(member, guild)
   return calculateFinalOverwrites(basePermissions, member, channel)
 };
 
@@ -156,8 +173,10 @@ module.exports = {
   ALL_PERMISSIONS,
   isBitSet,
   getRoleById,
+  getRoleByName,
   getOverwriteById,
-  calculateBasePermissions,
+  calculateRoleBasePermissions,
+  calculateBasePermissionsForMember,
   calculateRoleOverwrites,
   calculateFinalOverwrites,
   calculatePermissions,
