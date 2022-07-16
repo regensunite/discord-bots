@@ -60,7 +60,7 @@ const normalizeCellData = (raw, settings) => {
   return cellData
 }
 
-const createTable = (rows, columnGenerators, tableSettings) => {
+const createTable = (rows, columnGenerators, tableSettings = {}) => {
   const settings = addDefaultTableSettings(tableSettings)
   
   // first index => row
