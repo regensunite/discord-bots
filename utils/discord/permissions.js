@@ -1,6 +1,7 @@
 const {
   assertBigInt,
   assertBigIntIterable,
+  assertDiscordIdIterable,
 } = require('../assert.js')
 const range = require('../range.js')
 
@@ -45,7 +46,25 @@ const getRoleById = (roles, roleId) => {
 }
 
 // NOTE: overwrite may not exist (undefined)
-const getOverwriteById = (overwrites, roleId) => overwrites.find(overwrite => overwrite.id === roleId)
+const getOverwriteById = (overwrites, overwriteId) => overwrites.find(overwrite => overwrite.id === overwriteId)
+
+// NOTE: overwrite may not exist (undefined)
+// NOTE: throws if overwrite exists but has non-role type
+const getRoleOverwriteById = (overwrites, roleId) => {
+  const overwrite = getOverwriteById(overwrites, roleId)
+  if (overwrite && overwrite.type !== 0) {
+    throw new Error(`found overwrite with id ${roleId}, but it has type ${overwrite.type}, expected type 0 (role)`)
+  }
+}
+
+// NOTE: overwrite may not exist (undefined)
+// NOTE: throws if overwrite exists but has non-member type
+const getMemberOverwriteById = (overwrites, memberId) => {
+  const overwrite = getOverwriteById(overwrites, memberId)
+  if (overwrite && overwrite.type !== 1) {
+    throw new Error(`found overwrite with id ${memberId}, but it has type ${overwrite.type}, expected type 1 (member)`)
+  }
+}
 
 // implemented as described on: https://discord.com/developers/docs/topics/permissions#permissions-bitwise-permission-flags
 const calculateBasePermissions = (member, guild) => {
@@ -74,35 +93,43 @@ const calculateBasePermissions = (member, guild) => {
 };
 
 // implemented as described on: https://discord.com/developers/docs/topics/permissions#permissions-bitwise-permission-flags
-const calculateOverwrites = (basePermissions, member, channel) => {
+const calculateRoleOverwrites = (basePermissions, channel, roleIds) => {
   assertBigInt(basePermissions)
-  
+  assertDiscordIdIterable(roleIds)
+
   // NOTE: ADMINISTRATOR wins from any overrides
   if (isBitSet(basePermissions, flags.ADMINISTRATOR)) {
     return ALL_PERMISSIONS
   }
-  
+
   let permissions = basePermissions
-  
+
   // overwrites that apply to everyone
   // NOTE: id of @everyone role and id of guild are the same
-  const everyoneOverwrite = getOverwriteById(channel.permission_overwrites, channel.guild_id)
+  const everyoneOverwrite = getRoleOverwriteById(channel.permission_overwrites, channel.guild_id)
   if (everyoneOverwrite) {
     permissions &= ~BigInt(everyoneOverwrite.deny)
     permissions |= BigInt(everyoneOverwrite.allow)
   }
-  
-  // overwrites that apply to roles of the member
-  for (const roleId of member.roles) {
-    const roleOverwrite = getOverwriteById(channel.permission_overwrites, roleId)
+
+  // overwrites that apply to the role(s)
+  for (const roleId of roleIds) {
+    const roleOverwrite = getRoleOverwriteById(channel.permission_overwrites, roleId)
     if (roleOverwrite) {
       permissions &= ~BigInt(roleOverwrite.deny)
       permissions |= BigInt(roleOverwrite.allow)
     }
   }
+
+  return permissions
+}
+
+// implemented as described on: https://discord.com/developers/docs/topics/permissions#permissions-bitwise-permission-flags
+const calculateFinalOverwrites = (basePermissions, member, channel) => {
+  let permissions = calculateRoleOverwrites(basePermissions, channel, member.roles)
   
   // overwrites that apply to the member directly
-  const memberOverwrite = getOverwriteById(channel.permission_overwrites, member.user.id)
+  const memberOverwrite = getMemberOverwriteById(channel.permission_overwrites, member.user.id)
   if (memberOverwrite) {
     permissions &= ~BigInt(memberOverwrite.deny)
     permissions |= BigInt(memberOverwrite.allow)
@@ -114,7 +141,7 @@ const calculateOverwrites = (basePermissions, member, channel) => {
 // implemented as described on: https://discord.com/developers/docs/topics/permissions#permissions-bitwise-permission-flags
 const calculatePermissions = (member, guild, channel) => {
   const basePermissions = calculateBasePermissions(member, guild)
-  return calculateOverwrites(basePermissions, member, channel)
+  return calculateFinalOverwrites(basePermissions, member, channel)
 };
 
 const permissionBitsToString = (permissionBits, length = permissionCount) => {
@@ -131,7 +158,8 @@ module.exports = {
   getRoleById,
   getOverwriteById,
   calculateBasePermissions,
-  calculateOverwrites,
+  calculateRoleOverwrites,
+  calculateFinalOverwrites,
   calculatePermissions,
   permissionBitsToString,
 }
