@@ -76,6 +76,22 @@ const logCurrentObj = _wrap(function (label) {
   console.log(label, this[RUNNER_KEY].getCurrentObj())
 }, false) // NOTE: this function does NOT generate test results
 
+const expectUniqueRoleNames = _wrap(function (specs) {
+  const guild = this[RUNNER_KEY].getGuild()
+
+  const existingRoleNames = new Set()
+  for (let role of guild.roles) {
+    const roleNameLowercase = role.name.toLowerCase()
+    if (existingRoleNames.has(roleNameLowercase)) {
+      this[RUNNER_KEY].pushTestResult(false, `server has more than one role with name '${roleNameLowercase}' (case-insensitive)`);
+      return
+    }
+    existingRoleNames.add(roleNameLowercase)
+  }
+
+  this[RUNNER_KEY].pushTestResult(true, `server does not have roles with the same name`)
+})
+
 const expectCategory = _wrap(function (specs) {
   this[RUNNER_KEY].consumeObj(4, () => {
     specs()
@@ -409,6 +425,7 @@ module.exports = {
   runChannelTests,
   formatTestResults,
   logCurrentObj,
+  expectUniqueRoleNames,
   expectCategory,
   expectTextChannel,
   expectNewsChannel,

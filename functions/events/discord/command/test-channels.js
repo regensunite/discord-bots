@@ -8,6 +8,7 @@ const {
   expectVoiceChannel,
   expectName,
   expectPermissions,
+  expectUniqueRoleNames,
 } = require('../../../../tests/channels.js');
 const { fileDateTime } = require('../../../../utils/date.js');
 const { activateBits } = require('../../../../utils/discord/permissions.js');
@@ -60,6 +61,7 @@ const testResults = runChannelTests(guild, actualChannels, () => {
     // TODO
   }
 
+  expectUniqueRoleNames()
   expectCategory(() => {
     expectName(`━━ START HERE ━━`)
     expectPermissions() // TODO
