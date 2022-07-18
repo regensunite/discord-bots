@@ -2,14 +2,15 @@ const { nestChannels } = require('../../../../utils/channels.js')
 const {
   runChannelTests,
   formatTestResults,
-  logCurrentObj,
   expectCategory,
   expectTextChannel,
   expectNewsChannel,
   expectVoiceChannel,
   expectName,
+  expectPermissions,
 } = require('../../../../tests/channels.js');
 const { fileDateTime } = require('../../../../utils/date.js');
+const { activateBits } = require('../../../../utils/discord/permissions.js');
 const lib = require('lib')({token: process.env.STDLIB_SECRET_TOKEN});
 
 const [
@@ -40,14 +41,32 @@ const testResults = runChannelTests(guild, actualChannels, () => {
   const docsIcon = `📗`
   const prIcon = `📤`
 
+  // TODO role-based features that we need
+  // TODO 1. visibility of channels, join a locality, join working groups within that locality
+  // TODO 2. archive (category wide: "not viewable" + archive role to view archive? hopefully then original roles can stay attached as-is????? => drag and drop???)
+  // TODO 3. allow certain members to self-assign admin (this will clean up the sidebar for them when they don't need to do admin work)
+  // TODO 4. self-assign some tags (e.g. affinity-finance, affinity-planning, affinity-gardening, affinity-facilitating, affinity-outreach, affinity-writing...)
+
+  // key: role name, value: permissions bits
+  const permissionsByRole = {
+    // TODO now we actually have to come up with roles and sensible permissions...
+    // TODO 1. play around in discord (keep in mind global everyone role, other global roles, channel sync...)
+    // TODO 2. code the desired roles and permissions into the test suite
+    // TODO 3. configure the server such that the test suite passes
+    // TODO 4. do a few spot checks to verify that the test suite matches reality
+    // TODO 5. use the "view as role" feature to test everything was configured properly
+    '@everyone': activateBits(0n, []),
+    'regens-unite-bot': activateBits(0n, []),
+    // TODO
+  }
+
   expectCategory(() => {
     expectName(`━━ START HERE ━━`)
-    logCurrentObj('sh co')
+    expectPermissions() // TODO
 
     const startHereIcon = `👋`
     expectTextChannel(() => {
       expectName(`${startHereIcon}🪂welcome`)
-      logCurrentObj('shW co')
     })
     expectTextChannel(() => {
       expectName(`${startHereIcon}🤩introduce-yourself`)

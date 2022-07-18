@@ -118,7 +118,7 @@ const expectName = _wrap(function (expectedName) {
   )
 })
 
-const expectRolePermissions = _wrap(function (expectedRoleName, expectedRolePermissionBits) {
+const expectPermissionsForRole = _wrap(function (expectedRoleName, expectedRolePermissionBits) {
   assertString(expectedRoleName)
   assertBigInt(expectedRolePermissionBits)
 
@@ -140,6 +140,15 @@ const expectRolePermissions = _wrap(function (expectedRoleName, expectedRolePerm
     // NOTE: do not use error message from chai, because that does not render permissions nicely
     (e) => `permissions for role '${expectedRoleName}': expected '${permissionBitsToString(rolePermissionsInCurrentObj)}' to equal '${permissionBitsToString(expectedRolePermissionBits)}'`
   )
+})
+
+const expectPermissions = _wrap(function (permissionsByRole) {
+  const guild = this[RUNNER_KEY].getGuild();
+
+  for (let role of guild.roles) {
+    const expectedRolePermissionBits = permissionsByRole?.hasOwnProperty(role.name) ? permissionsByRole[role.name] : 0n
+    expectPermissionsForRole(role.name, expectedRolePermissionBits)
+  }
 })
 
 // create a test context object (used in the stack of the test runner for each nesting level of test cases)
@@ -406,5 +415,6 @@ module.exports = {
   expectVoiceChannel,
   expectStageChannel,
   expectName,
-  expectRolePermissions,
+  expectPermissionsForRole,
+  expectPermissions,
 }
