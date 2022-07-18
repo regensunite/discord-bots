@@ -2,6 +2,7 @@ const {
   assertBigInt,
   assertBigIntIterable,
   assertDiscordIdIterable,
+  assertPermissionString,
 } = require('../assert.js')
 const range = require('../range.js')
 
@@ -13,8 +14,14 @@ const range = require('../range.js')
 const activateBits = (startingBits, flagItr) => {
   assertBigInt(startingBits)
   assertBigIntIterable(flagItr)
-  return flagItr.reduce((combinedBits, currentBits) => combinedBits | currentBits, startingBits)
+  return flagItr.reduce((combinedBits, flag) => combinedBits | flag, startingBits)
 };
+
+const deactivateBits = (startingBits, flagItr) => {
+  assertBigInt(startingBits)
+  assertBigIntIterable(flagItr)
+  return flagItr.reduce((combinedBits, flag) => combinedBits & ~flag, startingBits)
+}
 
 const permissionCount = 41
 
@@ -166,8 +173,23 @@ const permissionBitsToString = (permissionBits, length = permissionCount) => {
   return permissionBits.toString(2).padStart(length, '0')
 }
 
+// take a string comprising of only 1s and 0s (e.g. 101100) and turn it into a bigint (e.g. 44n)
+const permissionStringToBits = (str) => {
+  assertPermissionString(str)
+  let bits = 0n
+  for (let i = 0; i < str.length; i++) {
+    // take next char from the back of the string
+    const char = str[str.length - 1 - i]
+    if (char === '1') {
+      bits |= 1n << BigInt(i)
+    }
+  }
+  return bits
+}
+
 module.exports = {
   activateBits,
+  deactivateBits,
   permissionCount,
   flags,
   ALL_PERMISSIONS,
@@ -181,4 +203,5 @@ module.exports = {
   calculateFinalOverwrites,
   calculatePermissions,
   permissionBitsToString,
+  permissionStringToBits,
 }

@@ -60,7 +60,15 @@ const assertDiscordIdIterable = (input) => {
   for (i of input) {
     assertDiscordId(i)
   }
- }
+}
+
+const isPermissionString = (input) => isString(input) && input.match(/^[01]*$/)
+
+const assertPermissionString = (input) => {
+  if (!isPermissionString(input)) {
+    throw new Error(`${typeof input} with value '${input}' is not a permission string`)
+  }
+}
 
 module.exports = {
   assertInteger,
@@ -73,4 +81,6 @@ module.exports = {
   isDiscordId,
   assertDiscordId,
   assertDiscordIdIterable,
+  isPermissionString,
+  assertPermissionString,
 }
