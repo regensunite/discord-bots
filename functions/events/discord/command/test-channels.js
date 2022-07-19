@@ -11,7 +11,7 @@ const {
   expectUniqueRoleNames,
 } = require('../../../../tests/channels.js');
 const { fileDateTime } = require('../../../../utils/date.js');
-const { activateBits } = require('../../../../utils/discord/permissions.js');
+const { activateBits, ALL_PERMISSIONS } = require('../../../../utils/discord/permissions.js');
 const lib = require('lib')({token: process.env.STDLIB_SECRET_TOKEN});
 
 const [
@@ -56,173 +56,320 @@ const testResults = runChannelTests(guild, actualChannels, () => {
     // TODO 3. configure the server such that the test suite passes
     // TODO 4. do a few spot checks to verify that the test suite matches reality
     // TODO 5. use the "view as role" feature to test everything was configured properly
-    '@everyone': activateBits(0n, []),
-    'regens-unite-bot': activateBits(0n, []),
+    '@everyone': 0n,
+    'regens-unite-bot': ALL_PERMISSIONS,
+    'member': activateBits(0n, []),
     // TODO
   }
 
   expectUniqueRoleNames()
   expectCategory(() => {
     expectName(`━━ START HERE ━━`)
-    expectPermissions() // TODO
+    expectPermissions({
+      ...permissionsByRole,
+    })
 
     const startHereIcon = `👋`
     expectTextChannel(() => {
       expectName(`${startHereIcon}🪂welcome`)
+      expectPermissions({
+        ...permissionsByRole,
+      })
     })
     expectTextChannel(() => {
       expectName(`${startHereIcon}🤩introduce-yourself`)
+      expectPermissions({
+        ...permissionsByRole,
+      })
     })
     expectTextChannel(() => {
       expectName(`${startHereIcon}❔info-booth`)
+      expectPermissions({
+        ...permissionsByRole,
+      })
     })
     expectTextChannel(() => {
       expectName(`${startHereIcon}💥get-involved`)
+      expectPermissions({
+        ...permissionsByRole,
+      })
     })
   })
 
   expectCategory(() => {
     expectName(`━━ MAIN GARDEN ━━`)
+    expectPermissions({
+      ...permissionsByRole,
+    })
+
     const mainGardenIcon = `🌱`
     expectNewsChannel(() => {
       expectName(`${mainGardenIcon}${updatesIcon}announcements`)
+      expectPermissions({
+        ...permissionsByRole,
+      })
     })
     expectTextChannel(() => {
       expectName(`${mainGardenIcon}${generalIcon}general`)
+      expectPermissions({
+        ...permissionsByRole,
+      })
     })
     expectTextChannel(() => {
       expectName(`${mainGardenIcon}🙏praise`)
+      expectPermissions({
+        ...permissionsByRole,
+      })
     })
     expectTextChannel(() => {
       expectName(`${mainGardenIcon}💡ideas`)
+      expectPermissions({
+        ...permissionsByRole,
+      })
     })
     expectTextChannel(() => {
       expectName(`${mainGardenIcon}🤝proposals`)
+      expectPermissions({
+        ...permissionsByRole,
+      })
     })
     expectTextChannel(() => {
       expectName(`${mainGardenIcon}📸pictures`)
+      expectPermissions({
+        ...permissionsByRole,
+      })
     })
     expectVoiceChannel(() => {
       expectName(`${mainGardenIcon}${meetingRoomIcon}meeting-room`)
+      expectPermissions({
+        ...permissionsByRole,
+      })
     })
   })
 
   expectCategory(() => {
     expectName(`━━ BRUSSELS ━━`)
+    expectPermissions({
+      ...permissionsByRole,
+    })
+
     const brusselsIcon = `🇧🇪`
     expectTextChannel(() => {
       expectName(`${brusselsIcon}${updatesIcon}updates`)
+      expectPermissions({
+        ...permissionsByRole,
+      })
     })
     expectTextChannel(() => {
       expectName(`${brusselsIcon}${meetingNotesIcon}meeting-notes`)
+      expectPermissions({
+        ...permissionsByRole,
+      })
     })
     expectTextChannel(() => {
       expectName(`${brusselsIcon}${generalIcon}general`)
+      expectPermissions({
+        ...permissionsByRole,
+      })
     })
     expectTextChannel(() => {
       expectName(`${brusselsIcon}${financeIcon}finance`)
+      expectPermissions({
+        ...permissionsByRole,
+      })
     })
     expectTextChannel(() => {
       expectName(`${brusselsIcon}${facilitatorsIcon}facilitators`)
+      expectPermissions({
+        ...permissionsByRole,
+      })
     })
     expectTextChannel(() => {
       expectName(`${brusselsIcon}${prIcon}pr`)
+      expectPermissions({
+        ...permissionsByRole,
+      })
     })
     expectTextChannel(() => {
       expectName(`${brusselsIcon}${logisticsIcon}logistics`)
+      expectPermissions({
+        ...permissionsByRole,
+      })
     })
     expectTextChannel(() => {
       expectName(`${brusselsIcon}${docsIcon}docs`)
+      expectPermissions({
+        ...permissionsByRole,
+      })
     })
     expectVoiceChannel(() => {
       expectName(`${brusselsIcon}${meetingRoomIcon}meeting-room`)
+      expectPermissions({
+        ...permissionsByRole,
+      })
     })
   })
 
   expectCategory(() => {
     expectName(`━━ BOGOTA ━━`)
+    expectPermissions({
+      ...permissionsByRole,
+    })
+
     const bogotaIcon = `🇨🇴`
     expectTextChannel(() => {
       expectName(`${bogotaIcon}${updatesIcon}updates`)
+      expectPermissions({
+        ...permissionsByRole,
+      })
     })
     expectTextChannel(() => {
       expectName(`${bogotaIcon}${meetingNotesIcon}meeting-notes`)
+      expectPermissions({
+        ...permissionsByRole,
+      })
     })
     expectTextChannel(() => {
       expectName(`${bogotaIcon}${generalIcon}general`)
+      expectPermissions({
+        ...permissionsByRole,
+      })
     })
     expectTextChannel(() => {
       expectName(`${bogotaIcon}${financeIcon}finance`)
+      expectPermissions({
+        ...permissionsByRole,
+      })
     })
     expectTextChannel(() => {
       expectName(`${bogotaIcon}${facilitatorsIcon}facilitators`)
+      expectPermissions({
+        ...permissionsByRole,
+      })
     })
     expectTextChannel(() => {
       expectName(`${bogotaIcon}${prIcon}pr`)
+      expectPermissions({
+        ...permissionsByRole,
+      })
     })
     expectTextChannel(() => {
       expectName(`${bogotaIcon}${logisticsIcon}logistics`)
+      expectPermissions({
+        ...permissionsByRole,
+      })
     })
     expectTextChannel(() => {
       expectName(`${bogotaIcon}${docsIcon}docs`)
+      expectPermissions({
+        ...permissionsByRole,
+      })
     })
     expectVoiceChannel(() => {
       expectName(`${bogotaIcon}${meetingRoomIcon}meeting-room`)
+      expectPermissions({
+        ...permissionsByRole,
+      })
     })
   })
 
   expectCategory(() => {
     expectName(`━━ AMSTERDAM ━━`)
+    expectPermissions({
+      ...permissionsByRole,
+    })
+
     const bogotaIcon = `🇳🇱`
     expectTextChannel(() => {
       expectName(`${bogotaIcon}${updatesIcon}updates`)
+      expectPermissions({
+        ...permissionsByRole,
+      })
     })
     expectTextChannel(() => {
       expectName(`${bogotaIcon}${meetingNotesIcon}meeting-notes`)
+      expectPermissions({
+        ...permissionsByRole,
+      })
     })
     expectTextChannel(() => {
       expectName(`${bogotaIcon}${generalIcon}general`)
+      expectPermissions({
+        ...permissionsByRole,
+      })
     })
     expectTextChannel(() => {
       expectName(`${bogotaIcon}${financeIcon}finance`)
+      expectPermissions({
+        ...permissionsByRole,
+      })
     })
     expectTextChannel(() => {
       expectName(`${bogotaIcon}${facilitatorsIcon}facilitators`)
+      expectPermissions({
+        ...permissionsByRole,
+      })
     })
     expectTextChannel(() => {
       expectName(`${bogotaIcon}${prIcon}pr`)
+      expectPermissions({
+        ...permissionsByRole,
+      })
     })
     expectTextChannel(() => {
       expectName(`${bogotaIcon}${logisticsIcon}logistics`)
+      expectPermissions({
+        ...permissionsByRole,
+      })
     })
     expectTextChannel(() => {
       expectName(`${bogotaIcon}${docsIcon}docs`)
+      expectPermissions({
+        ...permissionsByRole,
+      })
     })
     expectVoiceChannel(() => {
       expectName(`${bogotaIcon}${meetingRoomIcon}meeting-room`)
+      expectPermissions({
+        ...permissionsByRole,
+      })
     })
   })
 
   expectCategory(() => {
     expectName(`━━ ADMIN ━━`)
+    expectPermissions({
+      ...permissionsByRole,
+    })
+
     expectTextChannel(() => {
       expectName(`admin-only`)
+      expectPermissions({
+        ...permissionsByRole,
+      })
     })
   })
 
   expectCategory(() => {
     expectName(`━━ ARCHIVE ━━`)
+    expectPermissions({
+      ...permissionsByRole,
+    })
+
     const archiveIcon = `🗄`
     expectTextChannel(() => {
       expectName(`${archiveIcon}${archiveIcon}explore-archive`)
+      expectPermissions({
+        ...permissionsByRole,
+      })
     })
   })
 })
 
 console.log(formatTestResults(testResults))
 
-await lib.discord.channels['@0.3.2'].messages.create({
-  channel_id: context.params.event.channel_id,
+await lib.discord.interactions['@1.0.1'].responses.ephemeral.create({
+  token: `${context.params.event.token}`,
   content: `<@${context.params.event.member.user.id}> ran /${context.params.event.data.name}`,
   attachments: [
     {
@@ -230,4 +377,16 @@ await lib.discord.channels['@0.3.2'].messages.create({
       file: Buffer.from(formatTestResults(testResults)),
     },
   ],
-})
+});
+
+// TODO use permanent message once server setup is completed
+// await lib.discord.channels['@0.3.2'].messages.create({
+//   channel_id: context.params.event.channel_id,
+//   content: `<@${context.params.event.member.user.id}> ran /${context.params.event.data.name}`,
+//   attachments: [
+//     {
+//       filename: `test-results_${fileDateTime(new Date())}.txt`,
+//       file: Buffer.from(formatTestResults(testResults)),
+//     },
+//   ],
+// })
