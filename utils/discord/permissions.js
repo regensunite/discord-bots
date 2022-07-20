@@ -103,6 +103,7 @@ const _flagData = {
     bitPosition: 24n,
   },
   USE_VAD: {
+    // NOTE: Allows for using voice-activity-detection in a voice channel
     bitPosition: 25n,
   },
   CHANGE_NICKNAME: {
