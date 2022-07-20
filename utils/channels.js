@@ -10,7 +10,7 @@ const ignoredChannelTypes = [
 ]
 // => NOT ignored: GUILD_TEXT, GUILD_VOICE, GUILD_CATEGORY, GUILD_NEWS, GUILD_STAGE_VOICE
 
-const categoryType = 4
+const CATEGORY_TYPE = 4
 
 const textChannelTypes = [
   0, // GUILD_TEXT
@@ -59,18 +59,18 @@ const nestChannels = (_rawChannels) => {
   // NOTE: for all intents and purposes, everything that's NOT a category is a channel
   // NOTE: top-level channels don't have a parent id
   const topLevelChannels = channels
-    .filter(channel => channel.type !== categoryType && channel.parent_id === null)
+    .filter(channel => channel.type !== CATEGORY_TYPE && channel.parent_id === null)
     .sort(naturalOrderChannels)
   
   // NOTE: categories cannot have parents
   const categories = channels
-    .filter(channel => channel.type === categoryType && channel.parent_id === null)
+    .filter(channel => channel.type === CATEGORY_TYPE && channel.parent_id === null)
     .sort(naturalOrderChannels)
   
   // NOTE: for all intents and purposes, everything that's NOT a category is a channel
   // NOTE: child channels do have a parent id
   const childChannels = channels
-    .filter(channel => channel.type !== categoryType && channel.parent_id !== null)
+    .filter(channel => channel.type !== CATEGORY_TYPE && channel.parent_id !== null)
     .sort(naturalOrderChannels)
   
   const hierarchy = [
@@ -91,7 +91,23 @@ const nestChannels = (_rawChannels) => {
   return hierarchy
 }
 
+const getChannelByName = (channels, channelName, type = undefined) => {
+  const channel = channels.find(channel => channel.name === channelName)
+  
+  if (channel === undefined) {
+    throw new Error(`could not find channel with name '${channelName}'`);
+  }
+
+  if (type !== undefined && channel.type !== type) {
+    throw new Error(`channel with name ${channel.name} has type ${channel.type} (${typeToStr(channel.type)}), expected type ${type} (${typeToStr(type)})`)
+  }
+  
+  return channel
+}
+
 module.exports = {
+  CATEGORY_TYPE,
   nestChannels,
   typeToStr,
+  getChannelByName,
 }
