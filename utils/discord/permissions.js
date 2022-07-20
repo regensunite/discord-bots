@@ -106,18 +106,24 @@ const getOverwriteById = (overwrites, overwriteId) => overwrites.find(overwrite 
 // NOTE: throws if overwrite exists but has non-role type
 const getRoleOverwriteById = (overwrites, roleId) => {
   const overwrite = getOverwriteById(overwrites, roleId)
+
   if (overwrite && overwrite.type !== 0) {
     throw new Error(`found overwrite with id ${roleId}, but it has type ${overwrite.type}, expected type 0 (role)`)
   }
+
+  return overwrite
 }
 
 // NOTE: overwrite may not exist (undefined)
 // NOTE: throws if overwrite exists but has non-member type
 const getMemberOverwriteById = (overwrites, memberId) => {
   const overwrite = getOverwriteById(overwrites, memberId)
+
   if (overwrite && overwrite.type !== 1) {
     throw new Error(`found overwrite with id ${memberId}, but it has type ${overwrite.type}, expected type 1 (member)`)
   }
+
+  return overwrite
 }
 
 // implemented as described on: https://discord.com/developers/docs/topics/permissions#permissions-bitwise-permission-flags
