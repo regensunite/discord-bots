@@ -2,7 +2,7 @@ const { createTable } = require('../utils/table.js')
 const { typeToStr } = require('../utils/channels.js')
 const { AssertionError, expect } = require('chai');
 const { assertBigInt, assertString } = require('../utils/assert.js');
-const { permissionBitsToString, calculateRoleOverwrites, calculateRoleBasePermissions } = require('../utils/discord/permissions.js');
+const { permissionBitsToString, calculateRoleOverwrites, calculateRoleBasePermissions, diffPermissionBits } = require('../utils/discord/permissions.js');
 
 // global namespace of the test runner (key added to global scrope, under which test runner public API resides)
 const RUNNER_KEY = 'ctrK_' + Math.floor(Math.random() * Math.pow(10, 6));
@@ -154,7 +154,7 @@ const expectPermissionsForRole = _wrap(function (expectedRoleName, expectedRoleP
     () => expect(rolePermissionsInCurrentObj).to.equal(expectedRolePermissionBits),
     () => `permissions for role '${expectedRoleName}' are '${permissionBitsToString(expectedRolePermissionBits)}'`,
     // NOTE: do not use error message from chai, because that does not render permissions nicely
-    (e) => `permissions for role '${expectedRoleName}': expected '${permissionBitsToString(rolePermissionsInCurrentObj)}' to equal '${permissionBitsToString(expectedRolePermissionBits)}'`
+    (e) => `permissions for role '${expectedRoleName}': expected '${permissionBitsToString(rolePermissionsInCurrentObj)}' to equal '${permissionBitsToString(expectedRolePermissionBits)} (${diffPermissionBits(rolePermissionsInCurrentObj, expectedRolePermissionBits)})'`
   )
 })
 

@@ -153,23 +153,27 @@ const _flagData = {
 }
 
 const flags = {}
+const flagsReverse = {}
 const flagNames = {}
 for (let flagName of Object.getOwnPropertyNames(_flagData)) {
   const bitPosition = _flagData[flagName]?.bitPosition
-
   assertBigInt(bitPosition)
 
-  flags[flagName] = (1n << bitPosition)
+  const flagBits = (1n << bitPosition)
+  assertBigInt(flagBits)
+
+  flags[flagName] = flagBits
+  flagsReverse[flagBits] = flagName
   flagNames[flagName] = flagName
 }
 
 // NOTE: all bits turned on, except the TIMED_OUT bit
 const ALL_PERMISSIONS = activateBits(0n, range(0, permissionCount - 1, 1).map(i => 1n << BigInt(i))) & (~flags.TIMED_OUT)
 
-const isBitSet = (bits, mask) => {
+const isFlagSet = (bits, flag) => {
   assertBigInt(bits)
-  assertBigInt(mask)
-  return (bits & mask) === mask
+  assertBigInt(flag)
+  return (bits & flag) === flag
 };
 
 const getRoleById = (roles, roleId) => {
@@ -235,7 +239,7 @@ const calculateRoleBasePermissions = (guild, roleIds) => {
   }
   
   // NOTE: grant all permissions if ADMINISTRATOR permission is active
-  if (isBitSet(permissions, flags.ADMINISTRATOR)) {
+  if (isFlagSet(permissions, flags.ADMINISTRATOR)) {
     return ALL_PERMISSIONS
   }
 
@@ -258,7 +262,7 @@ const calculateRoleOverwrites = (basePermissions, channel, roleIds) => {
   assertDiscordIdIterable(roleIds)
 
   // NOTE: ADMINISTRATOR wins from any overrides
-  if (isBitSet(basePermissions, flags.ADMINISTRATOR)) {
+  if (isFlagSet(basePermissions, flags.ADMINISTRATOR)) {
     return ALL_PERMISSIONS
   }
 
@@ -304,7 +308,7 @@ const calculatePermissions = (member, guild, channel) => {
   return calculateFinalOverwrites(basePermissions, member, channel)
 };
 
-const permissionBitsToString = (permissionBits, length = permissionCount) => {
+const permissionBitsToString = (permissionBits, length) => {
   assertBigInt(permissionBits)
   return permissionBits.toString(2).padStart(length, '0')
 }
@@ -323,14 +327,62 @@ const permissionStringToBits = (str) => {
   return bits
 }
 
+// get a list of flag names that have been set in bits (bigint)
+// example: bits = 1011 => [ CREATE_INSTANT_INVITE, KICK_MEMBERS, ADMINISTRATOR ]
+const getPermissionNames = (bits) => {
+  assertBigInt(bits)
+
+  const permissionNames = []
+
+  // loop example when bits = 110:
+  // - 0001
+  // - 0010
+  // - 0100
+  // - 1000 => bigger than bits, so loop breaks
+  for (let flag = 1n; flag <= bits; flag = (flag << 1n)) {
+    if (isFlagSet(bits, flag)) {
+      const flagName = flagsReverse[flag] || '<unknown>'
+      permissionNames.push(flagName)
+    }
+  }
+
+  return permissionNames
+}
+
+// get a string detailing which flags should be added to actualBits, and which flags should be removed
+// example: actualBits = 1000, expectedBits = 0101 => to be removed: ADMINISTRATOR; to be added: CREATE_INSTANT_INVITE, BAN_MEMBERS
+const diffPermissionBits = (actualBits, expectedBits) => {
+  assertBigInt(actualBits)
+  assertBigInt(expectedBits)
+
+  // bits that are different (XOR)
+  const diffBits = actualBits ^ expectedBits
+  if (diffBits === 0n) {
+    return '<equal>'
+  }
+
+  // bits that are in actual, but not in expected
+  const bitsToBeRemoved = diffBits & actualBits
+  const flagsToBeRemoved = getPermissionNames(bitsToBeRemoved)
+  const toBeRemovedStr = flagsToBeRemoved.length <= 0 ? '<none>' : flagsToBeRemoved.join(', ')
+
+  // bits that are in expected, but not in actual
+  const bitsToBeAdded = diffBits & expectedBits
+  const flagsToBeAdded = getPermissionNames(bitsToBeAdded)
+  const toBeAddedStr = flagsToBeAdded.length <= 0 ? '<none>' : flagsToBeAdded.join(', ')
+
+  return `to be removed: ${toBeRemovedStr}; to be added: ${toBeAddedStr}`
+}
+
 module.exports = {
   activateBits,
   deactivateBits,
   permissionCount,
   flags,
+  flagsReverse,
   flagNames,
   ALL_PERMISSIONS,
-  isBitSet,
+  isFlagSet,
   getRoleById,
   getRoleByName,
   getOverwriteById,
@@ -341,4 +393,6 @@ module.exports = {
   calculatePermissions,
   permissionBitsToString,
   permissionStringToBits,
+  getPermissionNames,
+  diffPermissionBits,
 }
