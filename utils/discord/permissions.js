@@ -26,49 +26,142 @@ const deactivateBits = (startingBits, flagItr) => {
 const permissionCount = 41
 
 // implemented as described on: https://discord.com/developers/docs/topics/permissions#permissions-bitwise-permission-flags
-const flags = {
-  CREATE_INSTANT_INVITE: (1n << 0n),
-  KICK_MEMBERS: (1n << 1n),
-  BAN_MEMBERS: (1n << 2n),
-  ADMINISTRATOR: (1n << 3n),
-  MANAGE_CHANNELS: (1n << 4n),
-  MANAGE_GUILD: (1n << 5n),
-  ADD_REACTIONS: (1n << 6n),
-  VIEW_AUDIT_LOG: (1n << 7n),
-  PRIORITY_SPEAKER: (1n << 8n),
-  STREAM: (1n << 9n),
-  VIEW_CHANNEL: (1n << 10n),
-  SEND_MESSAGES: (1n << 11n),
-  SEND_TTS_MESSAGES: (1n << 12n),
-  MANAGE_MESSAGES: (1n << 13n),
-  EMBED_LINKS: (1n << 14n),
-  ATTACH_FILES: (1n << 15n),
-  READ_MESSAGE_HISTORY: (1n << 16n),
-  MENTION_EVERYONE: (1n << 17n),
-  USE_EXTERNAL_EMOJIS: (1n << 18n),
-  VIEW_GUILD_INSIGHTS: (1n << 19n),
-  CONNECT: (1n << 20n),
-  SPEAK: (1n << 21n),
-  MUTE_MEMBERS: (1n << 22n),
-  DEAFEN_MEMBERS: (1n << 23n),
-  MOVE_MEMBERS: (1n << 24n),
-  USE_VAD: (1n << 25n),
-  CHANGE_NICKNAME: (1n << 26n),
-  MANAGE_NICKNAMES: (1n << 27n),
-  MANAGE_ROLES: (1n << 28n),
-  MANAGE_WEBHOOKS: (1n << 29n),
-  MANAGE_EMOJIS_AND_STICKERS: (1n << 30n),
-  USE_APPLICATION_COMMANDS: (1n << 31n),
-  REQUEST_TO_SPEAK: (1n << 32n),
-  MANAGE_EVENTS: (1n << 33n),
-  MANAGE_THREADS: (1n << 34n),
-  CREATE_PUBLIC_THREADS: (1n << 35n),
-  CREATE_PRIVATE_THREADS: (1n << 36n),
-  USE_EXTERNAL_STICKERS: (1n << 37n),
-  SEND_MESSAGES_IN_THREADS: (1n << 38n),
-  USE_EMBEDDED_ACTIVITIES: (1n << 39n),
-  TIMED_OUT: (1n << 40n),
-};
+const _flagData = {
+  CREATE_INSTANT_INVITE: {
+    bitPosition: 0n,
+  },
+  KICK_MEMBERS: {
+    bitPosition: 1n,
+  },
+  BAN_MEMBERS: {
+    bitPosition: 2n,
+  },
+  ADMINISTRATOR: {
+    bitPosition: 3n,
+  },
+  MANAGE_CHANNELS: {
+    bitPosition: 4n,
+  },
+  MANAGE_GUILD: {
+    bitPosition: 5n,
+  },
+  ADD_REACTIONS: {
+    bitPosition: 6n,
+  },
+  VIEW_AUDIT_LOG: {
+    bitPosition: 7n,
+  },
+  PRIORITY_SPEAKER: {
+    bitPosition: 8n,
+  },
+  STREAM: {
+    bitPosition: 9n,
+  },
+  VIEW_CHANNEL: {
+    bitPosition: 10n,
+  },
+  SEND_MESSAGES: {
+    bitPosition: 11n,
+  },
+  SEND_TTS_MESSAGES: {
+    bitPosition: 12n,
+  },
+  MANAGE_MESSAGES: {
+    bitPosition: 13n,
+  },
+  EMBED_LINKS: {
+    bitPosition: 14n,
+  },
+  ATTACH_FILES: {
+    bitPosition: 15n,
+  },
+  READ_MESSAGE_HISTORY: {
+    bitPosition: 16n,
+  },
+  MENTION_EVERYONE: {
+    bitPosition: 17n,
+  },
+  USE_EXTERNAL_EMOJIS: {
+    bitPosition: 18n,
+  },
+  VIEW_GUILD_INSIGHTS: {
+    bitPosition: 19n,
+  },
+  CONNECT: {
+    bitPosition: 20n,
+  },
+  SPEAK: {
+    bitPosition: 21n,
+  },
+  MUTE_MEMBERS: {
+    bitPosition: 22n,
+  },
+  DEAFEN_MEMBERS: {
+    bitPosition: 23n,
+  },
+  MOVE_MEMBERS: {
+    bitPosition: 24n,
+  },
+  USE_VAD: {
+    bitPosition: 25n,
+  },
+  CHANGE_NICKNAME: {
+    bitPosition: 26n,
+  },
+  MANAGE_NICKNAMES: {
+    bitPosition: 27n,
+  },
+  MANAGE_ROLES: {
+    bitPosition: 28n,
+  },
+  MANAGE_WEBHOOKS: {
+    bitPosition: 29n,
+  },
+  MANAGE_EMOJIS_AND_STICKERS: {
+    bitPosition: 30n,
+  },
+  USE_APPLICATION_COMMANDS: {
+    bitPosition: 31n,
+  },
+  REQUEST_TO_SPEAK: {
+    bitPosition: 32n,
+  },
+  MANAGE_EVENTS: {
+    bitPosition: 33n,
+  },
+  MANAGE_THREADS: {
+    bitPosition: 34n,
+  },
+  CREATE_PUBLIC_THREADS: {
+    bitPosition: 35n,
+  },
+  CREATE_PRIVATE_THREADS: {
+    bitPosition: 36n,
+  },
+  USE_EXTERNAL_STICKERS: {
+    bitPosition: 37n,
+  },
+  SEND_MESSAGES_IN_THREADS: {
+    bitPosition: 38n,
+  },
+  USE_EMBEDDED_ACTIVITIES: {
+    bitPosition: 39n,
+  },
+  TIMED_OUT: {
+    bitPosition: 40n,
+  },
+}
+
+const flags = {}
+const flagNames = {}
+for (let flagName of Object.getOwnPropertyNames(_flagData)) {
+  const bitPosition = _flagData[flagName]?.bitPosition
+
+  assertBigInt(bitPosition)
+
+  flags[flagName] = (1n << bitPosition)
+  flagNames[flagName] = flagName
+}
 
 // NOTE: all bits turned on, except the TIMED_OUT bit
 const ALL_PERMISSIONS = activateBits(0n, range(0, permissionCount - 1, 1).map(i => 1n << BigInt(i))) & (~flags.TIMED_OUT)
@@ -235,6 +328,7 @@ module.exports = {
   deactivateBits,
   permissionCount,
   flags,
+  flagNames,
   ALL_PERMISSIONS,
   isBitSet,
   getRoleById,
