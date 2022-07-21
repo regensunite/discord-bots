@@ -10,6 +10,7 @@ const {
   expectPermissions,
   expectUniqueRoleNames,
   expectRoleNames,
+  expectStageChannel,
 } = require('../../../../tests/channels.js');
 const { fileDateTime } = require('../../../../utils/date.js');
 const { activateBits, flags, ALL_PERMISSIONS } = require('../../../../utils/discord/permissions.js');
@@ -143,7 +144,7 @@ const testResults = runChannelTests(guild, actualChannels, () => {
   }
 
   // NOTE: use these settings for ONBOARDING channels (i.e. channels that are visible before verification)
-  const onboardingPermissionBitsByRole = {
+  const onboardingChannelPermissionBitsByRole = {
     ..._defaultPermissionBitsByRole,
     [roles.EVERYONE]: activateBits(0n, [
       ..._defaultFlags,
@@ -246,6 +247,32 @@ const testResults = runChannelTests(guild, actualChannels, () => {
     ]),
   })
 
+  // NOTE: use these settings for PROJECT channels
+  const projectChannelPermissionBitsByRole = {
+    ..._defaultPermissionBitsByRole,
+    [roles.MEMBER]: activateBits(0n, [
+      ..._defaultFlags,
+      ..._readFlags,
+      ..._writeFlags,
+      ..._threadFlags,
+      ..._voiceFlags,
+      ..._stageFlags,
+    ]),
+  }
+
+  // NOTE: use these settings for UTILITY channels
+  const breakoutChannelPermissionBitsByRole = {
+    ..._defaultPermissionBitsByRole,
+    [roles.MEMBER]: activateBits(0n, [
+      ..._defaultFlags,
+      ..._readFlags,
+      ..._writeFlags,
+      ..._threadFlags,
+      ..._voiceFlags,
+      ..._stageFlags,
+    ]),
+  }
+
   // NOTE: filter out duplicates, so that keys of the roles object can point to the same roles, if desired
   expectRoleNames([...new Set(Object.values(roles))])
   expectUniqueRoleNames()
@@ -255,11 +282,11 @@ const testResults = runChannelTests(guild, actualChannels, () => {
     const startHereIcon = `👋`
 
     expectName(`━━ START HERE ━━`)
-    expectPermissions(onboardingPermissionBitsByRole)
+    expectPermissions(onboardingChannelPermissionBitsByRole)
 
     expectTextChannel(() => {
       expectName(`${startHereIcon}🪂welcome`)
-      expectPermissions(onboardingPermissionBitsByRole)
+      expectPermissions(onboardingChannelPermissionBitsByRole)
     })
     expectTextChannel(() => {
       expectName(`${startHereIcon}🤩introduce-yourself`)
@@ -268,11 +295,11 @@ const testResults = runChannelTests(guild, actualChannels, () => {
     })
     expectTextChannel(() => {
       expectName(`${startHereIcon}❔info-booth`)
-      expectPermissions(onboardingPermissionBitsByRole)
+      expectPermissions(onboardingChannelPermissionBitsByRole)
     })
     expectTextChannel(() => {
       expectName(`${startHereIcon}💥get-involved`)
-      expectPermissions(onboardingPermissionBitsByRole)
+      expectPermissions(onboardingChannelPermissionBitsByRole)
     })
   })
 
@@ -307,6 +334,9 @@ const testResults = runChannelTests(guild, actualChannels, () => {
       expectName(`${mainGardenIcon}📸pictures`)
       expectPermissions(publicChannelPermissionBitsByRole)
     })
+
+    // TODO consolidate all meeting notes into new channel here!
+
     expectVoiceChannel(() => {
       expectName(`${mainGardenIcon}${meetingRoomIcon}meeting-room`)
       expectPermissions(publicChannelPermissionBitsByRole)
@@ -339,6 +369,7 @@ const testResults = runChannelTests(guild, actualChannels, () => {
       expectName(`${brusselsIcon}${facilitatorsIcon}facilitators`)
       expectPermissions(localityChannelPermissionBitsByRole(roles.BRUSSELS_FACILITATORS))
     })
+    // TODO merge PR and Docs into Comms => description: communication, marketing, public relations and documenting of the event
     expectTextChannel(() => {
       expectName(`${brusselsIcon}${prIcon}pr`)
       expectPermissions(localityChannelPermissionBitsByRole(roles.BRUSSELS_PR))
@@ -442,6 +473,66 @@ const testResults = runChannelTests(guild, actualChannels, () => {
     expectVoiceChannel(() => {
       expectName(`${bogotaIcon}${meetingRoomIcon}meeting-room`)
       expectPermissions(localityVoiceChannelPermissionBitsByRole(roles.AMSTERDAM_GENERAL))
+    })
+  })
+
+  // category: PROJECTS
+  expectCategory(() => {
+    expectName(`━━ PROJECTS ━━`)
+    expectPermissions(projectChannelPermissionBitsByRole)
+
+    const projectsIcon = `🔥`
+    expectTextChannel(() => {
+      expectName(`${projectsIcon}💭discord-changes`)
+      expectPermissions(projectChannelPermissionBitsByRole)
+    })
+    expectTextChannel(() => {
+      expectName(`${projectsIcon}🔅decision-protocol`)
+      expectPermissions(projectChannelPermissionBitsByRole)
+    })
+    expectTextChannel(() => {
+      expectName(`${projectsIcon}📝regen-journal`)
+      expectPermissions(projectChannelPermissionBitsByRole)
+    })
+    expectTextChannel(() => {
+      expectName(`${projectsIcon}🎙regen-radio`)
+      expectPermissions(projectChannelPermissionBitsByRole)
+    })
+    expectTextChannel(() => {
+      expectName(`${projectsIcon}📗handbook`)
+      expectPermissions(projectChannelPermissionBitsByRole)
+    })
+  })
+
+  // category: BREAKOUT ROOMS
+  expectCategory(() => {
+    expectName(`━━ BREAKOUT ROOMS ━━`)
+    expectPermissions(breakoutChannelPermissionBitsByRole)
+
+    const breakoutIcon = `🏡`
+    expectStageChannel(() => {
+      expectName(`${breakoutIcon}🍿main-stage`)
+      expectPermissions(breakoutChannelPermissionBitsByRole)
+    })
+    expectVoiceChannel(() => {
+      expectName(`${breakoutIcon}🎤voice-1`)
+      expectPermissions(breakoutChannelPermissionBitsByRole)
+    })
+    expectVoiceChannel(() => {
+      expectName(`${breakoutIcon}🎤voice-2`)
+      expectPermissions(breakoutChannelPermissionBitsByRole)
+    })
+    expectVoiceChannel(() => {
+      expectName(`${breakoutIcon}🎤voice-3`)
+      expectPermissions(breakoutChannelPermissionBitsByRole)
+    })
+    expectVoiceChannel(() => {
+      expectName(`${breakoutIcon}🎤voice-4`)
+      expectPermissions(breakoutChannelPermissionBitsByRole)
+    })
+    expectVoiceChannel(() => {
+      expectName(`${breakoutIcon}🎤voice-5`)
+      expectPermissions(breakoutChannelPermissionBitsByRole)
     })
   })
 
