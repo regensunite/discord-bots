@@ -45,8 +45,6 @@ const testResults = runChannelTests(guild, actualChannels, () => {
   const prIcon = `📤`
 
   // TODO role-based features that we need
-  // TODO 1. visibility of channels, join a locality, join working groups within that locality
-  // TODO 2. archive (category wide: "not viewable" + archive role to view archive? hopefully then original roles can stay attached as-is????? => drag and drop???)
   // TODO 3. allow certain members to self-assign admin (this will clean up the sidebar for them when they don't need to do admin work)
   // TODO 4. self-assign some tags (e.g. affinity-finance, affinity-planning, affinity-gardening, affinity-facilitating, affinity-outreach, affinity-writing...)
 
@@ -60,7 +58,11 @@ const testResults = runChannelTests(guild, actualChannels, () => {
   const roles = {
     EVERYONE: '@everyone',
     REGENS_UNITE_BOT: 'regens-unite-bot',
+    CARL_BOT: 'carl-bot',
     MEMBER: 'member',
+    ADMIN: 'admin', // TODO regular admin (this role does not give admin rights by itself, but it gives admins the ability to self assign)
+    SUDO: 'sudo', // TODO regular admin that operating in elevated modus
+    SUPER_ADMIN: 'super-admin', // TODO permanent admin rights
     BRUSSELS_GENERAL: 'brussels-general',
     BRUSSELS_FINANCE: 'brussels-general',
     BRUSSELS_FACILITATORS: 'brussels-general',
@@ -123,6 +125,12 @@ const testResults = runChannelTests(guild, actualChannels, () => {
   // NOTE: don't use directly in the tests (_ prefix)
   const _defaultPermissionBitsByRole = {
     [roles.REGENS_UNITE_BOT]: ALL_PERMISSIONS,
+    [roles.CARL_BOT]: ALL_PERMISSIONS,
+    [roles.SUPER_ADMIN]: ALL_PERMISSIONS,
+    [roles.SUDO]: ALL_PERMISSIONS,
+    [roles.ADMIN]: activateBits(0n, [
+      ..._defaultFlags,
+    ]),
     [roles.EVERYONE]: activateBits(0n, [
       ..._defaultFlags,
     ]),
@@ -159,6 +167,11 @@ const testResults = runChannelTests(guild, actualChannels, () => {
 
     // NOTE: permissions below are so that we don't need to reconfigure every role in the Discord settings
     //       (because we changed @everyone, which is effectively applied to all other roles, so the tests would complain about missing settings for the roles below)
+
+    [roles.ADMIN]: activateBits(0n, [
+      ..._defaultFlags,
+      ..._readFlags,
+    ]),
 
     [roles.BRUSSELS_GENERAL]: activateBits(0n, [
       ..._defaultFlags,
@@ -271,6 +284,20 @@ const testResults = runChannelTests(guild, actualChannels, () => {
       ..._voiceFlags,
       ..._stageFlags,
     ]),
+  }
+
+  // NOTE: use these settings for ADMIN channels
+  const adminChannelPermissionBitsByRole = {
+    ..._defaultPermissionBitsByRole,
+    [roles.ADMIN]: activateBits(0n, [
+      ..._defaultFlags,
+      ..._readFlags,
+      ..._writeFlags,
+      ..._threadFlags,
+      ..._voiceFlags,
+      ..._stageFlags,
+    ]),
+    // NOTE: no need to configure sudo and super admin here, they already have all permissions
   }
 
   // NOTE: filter out duplicates, so that keys of the roles object can point to the same roles, if desired
@@ -536,22 +563,18 @@ const testResults = runChannelTests(guild, actualChannels, () => {
     })
   })
 
-  // TODO continue permissions here...
-
   // category: ADMIN
   expectCategory(() => {
     expectName(`━━ ADMIN ━━`)
-    expectPermissions({
-      ..._defaultPermissionBitsByRole,
-    })
+    expectPermissions(adminChannelPermissionBitsByRole)
 
     expectTextChannel(() => {
       expectName(`admin-only`)
-      expectPermissions({
-        ..._defaultPermissionBitsByRole,
-      })
+      expectPermissions(adminChannelPermissionBitsByRole)
     })
   })
+
+  // TODO continue permissions here...
 
   // category: ARCHIVE
   expectCategory(() => {
