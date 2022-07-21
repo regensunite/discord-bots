@@ -31,7 +31,7 @@ function _wrap(def, generatesTestResults = true) {
   return (...args) => {
     // run code before expecation function
     _assertTestRunnerPresent()
-    
+
     // run the expecation function
     const testResultCountBefore = this[RUNNER_KEY].peekContext().testResults.length
     def(...args)
@@ -297,6 +297,9 @@ const runChannelTests = (guild, actualNestedSortedChannels, specs) => {
 
         // close the context of the children...
         closeContext(expectedType)
+      } else {
+        // notify that we're overconsuming
+        currentContext.testResults.push(_createTestResult(false, `expected ${typeToStr(expectedType)}, but no objects left in current context`))
       }
     }
 
