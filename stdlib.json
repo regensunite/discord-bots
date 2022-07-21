@@ -26,6 +26,12 @@
       "subtype": {
         "command": "clear-bot-status"
       }
+    },
+    "functions/events/discord/message/create/prefix/rubinstall.js": {
+      "name": "discord.message.create.prefix",
+      "subtype": {
+        "prefix": "!rub-install"
+      }
     }
   }
 }

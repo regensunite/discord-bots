@@ -16,6 +16,10 @@ const { fileDateTime } = require('../../../../utils/date.js');
 const { activateBits, flags, ALL_PERMISSIONS } = require('../../../../utils/discord/permissions.js');
 const lib = require('lib')({token: process.env.STDLIB_SECRET_TOKEN});
 
+// TODO code quality & best practices:
+// TODO - send ephemeral response ASAP, then update once results are ready
+// TODO - use try-catch block to send response when something goes wrong
+
 const [
   guild,
   _rawChannels,
