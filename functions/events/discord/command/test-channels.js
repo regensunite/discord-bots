@@ -44,25 +44,15 @@ const testResults = runChannelTests(guild, actualChannels, () => {
   const docsIcon = `📗`
   const prIcon = `📤`
 
-  // TODO role-based features that we need
-  // TODO 3. allow certain members to self-assign admin (this will clean up the sidebar for them when they don't need to do admin work)
-  // TODO 4. self-assign some tags (e.g. affinity-finance, affinity-planning, affinity-gardening, affinity-facilitating, affinity-outreach, affinity-writing...)
-
-  // TODO now we actually have to come up with roles and sensible permissions...
-  // TODO 1. play around in discord (keep in mind global everyone role, other global roles, channel sync...)
-  // TODO 2. code the desired roles and permissions into the test suite
-  // TODO 3. configure the server such that the test suite passes
-  // TODO 4. do a few spot checks to verify that the test suite matches reality
-  // TODO 5. use the "view as role" feature to test everything was configured properly
-
   const roles = {
     EVERYONE: '@everyone',
     REGENS_UNITE_BOT: 'regens-unite-bot',
     CARL_BOT: 'carl-bot',
     MEMBER: 'member',
-    ADMIN: 'admin', // TODO regular admin (this role does not give admin rights by itself, but it gives admins the ability to self assign)
-    SUDO: 'sudo', // TODO regular admin that operating in elevated modus
-    SUPER_ADMIN: 'super-admin', // TODO permanent admin rights
+    ADMIN: 'admin', // NOTE: regular admin; doesn't have admin permissions by default, but can self-(un)assign the 'sudo' role
+    SUDO: 'sudo', // NOTE: regular admin operating with elevated rights
+    SUPER_ADMIN: 'super-admin', // NOTE: permanent admin rights
+    VIEWING_ARCHIVE: 'viewing-archive', // NOTE: role to view the archive (self-assignable by members)
     BRUSSELS_GENERAL: 'brussels-general',
     BRUSSELS_FINANCE: 'brussels-general',
     BRUSSELS_FACILITATORS: 'brussels-general',
@@ -131,6 +121,9 @@ const testResults = runChannelTests(guild, actualChannels, () => {
     [roles.ADMIN]: activateBits(0n, [
       ..._defaultFlags,
     ]),
+    [roles.VIEWING_ARCHIVE]: activateBits(0n, [
+      ..._defaultFlags,
+    ]),
     [roles.EVERYONE]: activateBits(0n, [
       ..._defaultFlags,
     ]),
@@ -169,6 +162,11 @@ const testResults = runChannelTests(guild, actualChannels, () => {
     //       (because we changed @everyone, which is effectively applied to all other roles, so the tests would complain about missing settings for the roles below)
 
     [roles.ADMIN]: activateBits(0n, [
+      ..._defaultFlags,
+      ..._readFlags,
+    ]),
+
+    [roles.VIEWING_ARCHIVE]: activateBits(0n, [
       ..._defaultFlags,
       ..._readFlags,
     ]),
@@ -298,6 +296,24 @@ const testResults = runChannelTests(guild, actualChannels, () => {
       ..._stageFlags,
     ]),
     // NOTE: no need to configure sudo and super admin here, they already have all permissions
+  }
+
+  // NOTE: use these settings for ARCHIVED channels
+  const archiveChannelPermissionBitsByRole = {
+    ..._defaultPermissionBitsByRole,
+    [roles.VIEWING_ARCHIVE]: activateBits(0n, [
+      ..._defaultFlags,
+      ..._readFlags,
+    ]),
+  }
+
+  // NOTE/ uste these settings for the EXPLORE ARCHIVE channel
+  const exploreArchiveChannelPermissionBitsByRole = {
+    ..._defaultPermissionBitsByRole,
+    [roles.MEMBER]: activateBits(0n, [
+      ..._defaultFlags,
+      ..._readFlags,
+    ]),
   }
 
   // NOTE: filter out duplicates, so that keys of the roles object can point to the same roles, if desired
@@ -568,27 +584,28 @@ const testResults = runChannelTests(guild, actualChannels, () => {
     expectName(`━━ ADMIN ━━`)
     expectPermissions(adminChannelPermissionBitsByRole)
 
+    // TODO sudo channel?
+
     expectTextChannel(() => {
       expectName(`admin-only`)
       expectPermissions(adminChannelPermissionBitsByRole)
     })
   })
 
-  // TODO continue permissions here...
-
   // category: ARCHIVE
   expectCategory(() => {
     expectName(`━━ ARCHIVE ━━`)
-    expectPermissions({
-      ..._defaultPermissionBitsByRole,
-    })
+    expectPermissions(archiveChannelPermissionBitsByRole)
 
     const archiveIcon = `🗄`
     expectTextChannel(() => {
       expectName(`${archiveIcon}${archiveIcon}explore-archive`)
-      expectPermissions({
-        ..._defaultPermissionBitsByRole,
-      })
+      // NOTE: this channel needs to be read-only by members, such that they can visit the archive
+      expectPermissions(exploreArchiveChannelPermissionBitsByRole)
+    })
+    expectTextChannel(() => {
+      expectName(`${archiveIcon}${archiveIcon}test-archived-channel`)
+      expectPermissions(archiveChannelPermissionBitsByRole)
     })
   })
 })
