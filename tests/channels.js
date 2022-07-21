@@ -76,7 +76,20 @@ const logCurrentObj = _wrap(function (label) {
   console.log(label, this[RUNNER_KEY].getCurrentObj())
 }, false) // NOTE: this function does NOT generate test results
 
-const expectUniqueRoleNames = _wrap(function (specs) {
+const expectRoleNames = _wrap(function (expectedRoleNames) {
+  const guild = this[RUNNER_KEY].getGuild()
+
+  const actualRoleNames = guild.roles.map(role => role.name)
+
+  _chaiTestCase(
+    () => expect(actualRoleNames).to.have.same.members(expectedRoleNames),
+    () => `the following roles are present in the server: ${expectedRoleNames.join(', ')}`,
+    // NOTE: do not use error message from chai, because that does not fully render the arrays
+    (e) => `roles in server: got ${actualRoleNames.join(', ')}; expected ${expectedRoleNames.join(', ')}`
+  )
+})
+
+const expectUniqueRoleNames = _wrap(function () {
   const guild = this[RUNNER_KEY].getGuild()
 
   const existingRoleNames = new Set()
@@ -425,6 +438,7 @@ module.exports = {
   runChannelTests,
   formatTestResults,
   logCurrentObj,
+  expectRoleNames,
   expectUniqueRoleNames,
   expectCategory,
   expectTextChannel,

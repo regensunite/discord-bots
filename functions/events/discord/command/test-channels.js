@@ -9,6 +9,7 @@ const {
   expectName,
   expectPermissions,
   expectUniqueRoleNames,
+  expectRoleNames,
 } = require('../../../../tests/channels.js');
 const { fileDateTime } = require('../../../../utils/date.js');
 const { activateBits, flags, ALL_PERMISSIONS } = require('../../../../utils/discord/permissions.js');
@@ -55,7 +56,6 @@ const testResults = runChannelTests(guild, actualChannels, () => {
   // TODO 4. do a few spot checks to verify that the test suite matches reality
   // TODO 5. use the "view as role" feature to test everything was configured properly
 
-  // TODO make sure all these roles are present in the server!!!
   const roles = {
     EVERYONE: '@everyone',
     REGENS_UNITE_BOT: 'regens-unite-bot',
@@ -246,6 +246,8 @@ const testResults = runChannelTests(guild, actualChannels, () => {
     ]),
   })
 
+  // NOTE: filter out duplicates, so that keys of the roles object can point to the same roles, if desired
+  expectRoleNames([...new Set(Object.values(roles))])
   expectUniqueRoleNames()
 
   // category: START HERE
