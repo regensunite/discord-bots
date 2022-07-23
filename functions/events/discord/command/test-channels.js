@@ -319,6 +319,8 @@ const testResults = runChannelTests(guild, actualChannels, () => {
   expectRoleNames([...new Set(Object.values(roles))])
   expectUniqueRoleNames()
 
+  // TODO give each channel of each category a description and test for it?
+
   // category: START HERE
   expectCategory(() => {
     const startHereIcon = `👋`
@@ -327,9 +329,12 @@ const testResults = runChannelTests(guild, actualChannels, () => {
     expectPermissions(onboardingChannelPermissionBitsByRole)
 
     expectTextChannel(() => {
+      expectName(`${startHereIcon}✍🏼convenant`)
+      expectPermissions(onboardingChannelPermissionBitsByRole)
+    })
+    expectTextChannel(() => {
       expectName(`${startHereIcon}🪂welcome`)
       expectPermissions(onboardingChannelPermissionBitsByRole)
-      // TODO give each channel a description and test for it?
     })
     expectTextChannel(() => {
       expectName(`${startHereIcon}🤩introduce-yourself`)
