@@ -41,7 +41,6 @@ const testResults = runChannelTests(guild, actualChannels, () => {
   const updatesIcon = `📣`
   const generalIcon = `🌈`
   const meetingRoomIcon = `🎤`
-  const meetingNotesIcon = `🗒`
   const financeIcon = `🧮`
   const facilitatorsIcon = `🙋`
   const logisticsIcon = `✨`
@@ -82,7 +81,7 @@ const testResults = runChannelTests(guild, actualChannels, () => {
     flags.CREATE_INSTANT_INVITE,
     flags.CHANGE_NICKNAME,
     flags.USE_EXTERNAL_EMOJIS, // NOTE: you need to have write/reaction permissions to use this permission
-    flags.USE_EXTERNAL_STICKERS, // NOTE: you need to have write/reaction permissions to use this permission // TODO test this!!!
+    flags.USE_EXTERNAL_STICKERS, // NOTE: you need to have write/reaction permissions to use this permission
   ]
 
   const _readFlags = [
@@ -334,6 +333,7 @@ const testResults = runChannelTests(guild, actualChannels, () => {
     expectTextChannel(() => {
       expectName(`${startHereIcon}🪂welcome`)
       expectPermissions(onboardingChannelPermissionBitsByRole)
+      // TODO give each channel a description and test for it?
     })
     expectTextChannel(() => {
       expectName(`${startHereIcon}🤩introduce-yourself`)
@@ -381,9 +381,10 @@ const testResults = runChannelTests(guild, actualChannels, () => {
       expectName(`${mainGardenIcon}📸pictures`)
       expectPermissions(publicChannelPermissionBitsByRole)
     })
-
-    // TODO consolidate all meeting notes into new channel here!
-
+    expectTextChannel(() => {
+      expectName(`${mainGardenIcon}📗notes-docs-links`)
+      expectPermissions(publicChannelPermissionBitsByRole)
+    })
     expectVoiceChannel(() => {
       expectName(`${mainGardenIcon}${meetingRoomIcon}meeting-room`)
       expectPermissions(publicChannelPermissionBitsByRole)
@@ -399,10 +400,6 @@ const testResults = runChannelTests(guild, actualChannels, () => {
     expectTextChannel(() => {
       expectName(`${brusselsIcon}${updatesIcon}updates`)
       expectPermissions(localityUpdateChannelPermissionBitsByRole(roles.BRUSSELS_GENERAL))
-    })
-    expectTextChannel(() => {
-      expectName(`${brusselsIcon}${meetingNotesIcon}meeting-notes`)
-      expectPermissions(localityChannelPermissionBitsByRole(roles.BRUSSELS_GENERAL))
     })
     expectTextChannel(() => {
       expectName(`${brusselsIcon}${generalIcon}general`)
@@ -446,10 +443,6 @@ const testResults = runChannelTests(guild, actualChannels, () => {
       expectPermissions(localityUpdateChannelPermissionBitsByRole(roles.BOGOTA_GENERAL))
     })
     expectTextChannel(() => {
-      expectName(`${bogotaIcon}${meetingNotesIcon}meeting-notes`)
-      expectPermissions(localityChannelPermissionBitsByRole(roles.BOGOTA_GENERAL))
-    })
-    expectTextChannel(() => {
       expectName(`${bogotaIcon}${generalIcon}general`)
       expectPermissions(localityChannelPermissionBitsByRole(roles.BOGOTA_GENERAL))
     })
@@ -488,10 +481,6 @@ const testResults = runChannelTests(guild, actualChannels, () => {
     expectTextChannel(() => {
       expectName(`${bogotaIcon}${updatesIcon}updates`)
       expectPermissions(localityUpdateChannelPermissionBitsByRole(roles.AMSTERDAM_GENERAL))
-    })
-    expectTextChannel(() => {
-      expectName(`${bogotaIcon}${meetingNotesIcon}meeting-notes`)
-      expectPermissions(localityChannelPermissionBitsByRole(roles.AMSTERDAM_GENERAL))
     })
     expectTextChannel(() => {
       expectName(`${bogotaIcon}${generalIcon}general`)
