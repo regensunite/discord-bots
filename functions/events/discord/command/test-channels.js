@@ -11,6 +11,8 @@ const {
   expectUniqueRoleNames,
   expectRoleNames,
   expectStageChannel,
+  forEachRemaining,
+  expectAny,
 } = require('../../../../tests/channels.js');
 const { fileDateTime } = require('../../../../utils/date.js');
 const { activateBits, flags, ALL_PERMISSIONS } = require('../../../../utils/discord/permissions.js');
@@ -586,14 +588,13 @@ try {
         // NOTE: this channel needs to be read-only by members, such that they can visit the archive
         expectPermissions(exploreArchiveChannelPermissionBitsByRole)
       })
-      expectTextChannel(() => {
-        expectName(`${archiveIcon}${archiveIcon}test-archived-channel`)
-        expectPermissions(archiveChannelPermissionBitsByRole)
+      forEachRemaining(() => {
+        expectAny(() => {
+          expectPermissions(archiveChannelPermissionBitsByRole)
+        })
       })
     })
   })
-
-  console.log(formatTestResults(testResults))
 
   const messageContent = `<@${context.params.event.member.user.id}> ran /${context.params.event.data.name}`
   const messageAttachments = [{

@@ -76,6 +76,20 @@ const logCurrentObj = _wrap(function (label) {
   console.log(label, this[RUNNER_KEY].getCurrentObj())
 }, false) // NOTE: this function does NOT generate test results
 
+// run the specs (test case(s)) for all categories and channels in the current context that haven't been consumed yet
+// this implies that no specific objects are expected, but rather that they should be tested in a general way
+const forEachRemaining = _wrap(function (specs) {
+  const context = this[RUNNER_KEY].peekContext()
+
+  const currentPointer = context.pointer
+  while (context.pointer < context.objects.length - 1) {
+    specs()
+    if (currentPointer === context.pointer) {
+      throw new Error('Specs inside forEachRemaining block failed to advance pointer, this would result in an infinite loop. Did you forget to consume an object?')
+    }
+  }
+})
+
 const expectRoleNames = _wrap(function (expectedRoleNames) {
   const guild = this[RUNNER_KEY].getGuild()
 
@@ -103,6 +117,12 @@ const expectUniqueRoleNames = _wrap(function () {
   }
 
   this[RUNNER_KEY].pushTestResult(true, `server does not have roles with the same name`)
+})
+
+const expectAny = _wrap(function (specs) {
+  this[RUNNER_KEY].consumeObj(null, () => {
+    specs()
+  })
 })
 
 const expectCategory = _wrap(function (specs) {
@@ -236,10 +256,10 @@ const runChannelTests = (guild, actualNestedSortedChannels, specs) => {
       const currentObj = currentContext.objects[currentContext.pointer]
 
       // verify object type AND collect test results of children
-      if (currentObj.type === expectedType) {
+      if (expectedType === null || currentObj.type === expectedType) {
         currentContext.testResults.push(_createTestResult(
           null, // let icon depend on child results
-          `${typeToStr(expectedType)} '${currentObj.name}'`,
+          `${typeToStr(currentObj.type)} '${currentObj.name}'`,
           closedContext.testResults
         ))
       } else {
@@ -441,8 +461,10 @@ module.exports = {
   runChannelTests,
   formatTestResults,
   logCurrentObj,
+  forEachRemaining,
   expectRoleNames,
   expectUniqueRoleNames,
+  expectAny,
   expectCategory,
   expectTextChannel,
   expectNewsChannel,

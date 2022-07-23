@@ -24,6 +24,8 @@ const voiceChannelTypes = [
 
 const typeToStr = (channelType) => {
   switch(channelType) {
+    case null:
+      return 'ANY'
     case 0:
       return 'TEXT CHANNEL'
     case 5:
