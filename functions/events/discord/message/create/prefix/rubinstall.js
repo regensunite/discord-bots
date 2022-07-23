@@ -81,7 +81,7 @@ try {
   });  
 } catch (e) {
   // FAILURE MESSAGE
-  console.log(e);
+  console.error(e);
   await lib.discord.channels['@0.3.2'].messages.create({
     channel_id: `${context.params.event.channel_id}`,
     content: `❌ Failed to install Regens Unite Bot in this server. Error: \`\`\`${e}\`\`\``,
