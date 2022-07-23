@@ -560,8 +560,10 @@ const testResults = runChannelTests(guild, actualChannels, () => {
     expectName(`━━ ADMIN ━━`)
     expectPermissions(adminChannelPermissionBitsByRole)
 
-    // TODO sudo channel?
-
+    expectTextChannel(() => {
+      expectName(`sudo`)
+      expectPermissions(adminChannelPermissionBitsByRole)
+    })
     expectTextChannel(() => {
       expectName(`admin-only`)
       expectPermissions(adminChannelPermissionBitsByRole)
