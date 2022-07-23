@@ -44,8 +44,7 @@ const testResults = runChannelTests(guild, actualChannels, () => {
   const financeIcon = `🧮`
   const facilitatorsIcon = `🙋`
   const logisticsIcon = `✨`
-  const docsIcon = `📗`
-  const prIcon = `📤`
+  const communicationIcon = `📡`
 
   const roles = {
     EVERYONE: '@everyone',
@@ -59,21 +58,18 @@ const testResults = runChannelTests(guild, actualChannels, () => {
     BRUSSELS_GENERAL: 'brussels-general',
     BRUSSELS_FINANCE: 'brussels-general',
     BRUSSELS_FACILITATORS: 'brussels-general',
-    BRUSSELS_PR: 'brussels-general',
+    BRUSSELS_COMMUNICATION: 'brussels-general',
     BRUSSELS_LOGISTICS: 'brussels-general',
-    BRUSSELS_DOCS: 'brussels-general',
     BOGOTA_GENERAL: 'bogota-general',
     BOGOTA_FINANCE: 'bogota-general',
     BOGOTA_FACILITATORS: 'bogota-general',
-    BOGOTA_PR: 'bogota-general',
+    BOGOTA_COMMUNICATION: 'bogota-general',
     BOGOTA_LOGISTICS: 'bogota-general',
-    BOGOTA_DOCS: 'bogota-general',
     AMSTERDAM_GENERAL: 'amsterdam-general',
     AMSTERDAM_FINANCE: 'amsterdam-general',
     AMSTERDAM_FACILITATORS: 'amsterdam-general',
-    AMSTERDAM_PR: 'amsterdam-general',
+    AMSTERDAM_COMMUNICATION: 'amsterdam-general',
     AMSTERDAM_LOGISTICS: 'amsterdam-general',
-    AMSTERDAM_DOCS: 'amsterdam-general',
   }
 
   // NOTE: don't use directly in the tests (_ prefix)
@@ -413,18 +409,13 @@ const testResults = runChannelTests(guild, actualChannels, () => {
       expectName(`${brusselsIcon}${facilitatorsIcon}facilitators`)
       expectPermissions(localityChannelPermissionBitsByRole(roles.BRUSSELS_FACILITATORS))
     })
-    // TODO merge PR and Docs into Comms => description: communication, marketing, public relations and documenting of the event
     expectTextChannel(() => {
-      expectName(`${brusselsIcon}${prIcon}pr`)
-      expectPermissions(localityChannelPermissionBitsByRole(roles.BRUSSELS_PR))
+      expectName(`${brusselsIcon}${communicationIcon}communication`)
+      expectPermissions(localityChannelPermissionBitsByRole(roles.BRUSSELS_COMMUNICATION))
     })
     expectTextChannel(() => {
       expectName(`${brusselsIcon}${logisticsIcon}logistics`)
       expectPermissions(localityChannelPermissionBitsByRole(roles.BRUSSELS_LOGISTICS))
-    })
-    expectTextChannel(() => {
-      expectName(`${brusselsIcon}${docsIcon}docs`)
-      expectPermissions(localityChannelPermissionBitsByRole(roles.BRUSSELS_DOCS))
     })
     expectVoiceChannel(() => {
       expectName(`${brusselsIcon}${meetingRoomIcon}meeting-room`)
@@ -455,16 +446,12 @@ const testResults = runChannelTests(guild, actualChannels, () => {
       expectPermissions(localityChannelPermissionBitsByRole(roles.BOGOTA_FACILITATORS))
     })
     expectTextChannel(() => {
-      expectName(`${bogotaIcon}${prIcon}pr`)
-      expectPermissions(localityChannelPermissionBitsByRole(roles.BOGOTA_PR))
+      expectName(`${bogotaIcon}${communicationIcon}communication`)
+      expectPermissions(localityChannelPermissionBitsByRole(roles.BOGOTA_COMMUNICATION))
     })
     expectTextChannel(() => {
       expectName(`${bogotaIcon}${logisticsIcon}logistics`)
       expectPermissions(localityChannelPermissionBitsByRole(roles.BOGOTA_LOGISTICS))
-    })
-    expectTextChannel(() => {
-      expectName(`${bogotaIcon}${docsIcon}docs`)
-      expectPermissions(localityChannelPermissionBitsByRole(roles.BOGOTA_DOCS))
     })
     expectVoiceChannel(() => {
       expectName(`${bogotaIcon}${meetingRoomIcon}meeting-room`)
@@ -495,16 +482,12 @@ const testResults = runChannelTests(guild, actualChannels, () => {
       expectPermissions(localityChannelPermissionBitsByRole(roles.AMSTERDAM_FACILITATORS))
     })
     expectTextChannel(() => {
-      expectName(`${bogotaIcon}${prIcon}pr`)
-      expectPermissions(localityChannelPermissionBitsByRole(roles.AMSTERDAM_PR))
+      expectName(`${bogotaIcon}${communicationIcon}communication`)
+      expectPermissions(localityChannelPermissionBitsByRole(roles.AMSTERDAM_COMMUNICATION))
     })
     expectTextChannel(() => {
       expectName(`${bogotaIcon}${logisticsIcon}logistics`)
       expectPermissions(localityChannelPermissionBitsByRole(roles.AMSTERDAM_LOGISTICS))
-    })
-    expectTextChannel(() => {
-      expectName(`${bogotaIcon}${docsIcon}docs`)
-      expectPermissions(localityChannelPermissionBitsByRole(roles.AMSTERDAM_DOCS))
     })
     expectVoiceChannel(() => {
       expectName(`${bogotaIcon}${meetingRoomIcon}meeting-room`)
