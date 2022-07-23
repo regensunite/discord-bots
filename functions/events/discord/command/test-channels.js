@@ -595,28 +595,25 @@ try {
 
   console.log(formatTestResults(testResults))
 
-  await lib.discord.interactions['@1.0.1'].responses.ephemeral.create({
-    token: `${context.params.event.token}`,
-    content: `<@${context.params.event.member.user.id}> ran /${context.params.event.data.name}`,
-    attachments: [
-      {
-        filename: `test-results_${fileDateTime(new Date())}.txt`,
-        file: Buffer.from(formatTestResults(testResults)),
-      },
-    ],
-  });
-
-  // TODO use permanent message once server setup is completed
-  // await lib.discord.channels['@0.3.2'].messages.create({
-  //   channel_id: context.params.event.channel_id,
-  //   content: `<@${context.params.event.member.user.id}> ran /${context.params.event.data.name}`,
-  //   attachments: [
-  //     {
-  //       filename: `test-results_${fileDateTime(new Date())}.txt`,
-  //       file: Buffer.from(formatTestResults(testResults)),
-  //     },
-  //   ],
-  // })
+  const messageContent = `<@${context.params.event.member.user.id}> ran /${context.params.event.data.name}`
+  const messageAttachments = [{
+    filename: `test-results_${fileDateTime(new Date())}.txt`,
+    file: Buffer.from(formatTestResults(testResults)),
+  }]
+  const ephemeral = false
+  if (ephemeral) {
+    await lib.discord.interactions['@1.0.1'].responses.ephemeral.create({
+      token: `${context.params.event.token}`,
+      content: messageContent,
+      attachments: messageAttachments,
+    })
+  } else {
+    await lib.discord.channels['@0.3.2'].messages.create({
+      channel_id: context.params.event.channel_id,
+      content: messageContent,
+      attachments: messageAttachments,
+    })
+  }
 } catch (e) {
   // FAILURE MESSAGE
   console.error(e);
