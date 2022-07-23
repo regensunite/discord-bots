@@ -1,5 +1,5 @@
 const {
-  isBitSet,
+  isFlagSet,
   calculatePermissions,
   flags,
 } = require('../../../../utils/discord/permissions.js')
@@ -37,7 +37,7 @@ const [
 logMemberPermissions(members, guild, channel, 10)
 
 const listItems = members
-  .filter(member => isBitSet(calculatePermissions(member, guild, channel), flags.VIEW_CHANNEL))
+  .filter(member => isFlagSet(calculatePermissions(member, guild, channel), flags.VIEW_CHANNEL))
   .map(member => member.user.id)
   .map(userId => `- <@${userId}>`)
 
