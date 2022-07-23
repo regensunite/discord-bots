@@ -6,7 +6,7 @@ try {
   
   // SLASH COMMAND: list-people
   await lib.discord.commands['@0.0.0'].create({
-    "guild_id": "991741295758430228",
+    "guild_id": `${context.params.event.guild_id}`,
     "name": "list-people",
     "description": "list all people that can read the given channel",
     "options": [
@@ -21,7 +21,7 @@ try {
 
   // SLASH COMMAND: test-channels
   await lib.discord.commands['@0.0.0'].create({
-    "guild_id": "991741295758430228",
+    "guild_id": `${context.params.event.guild_id}`,
     "name": "test-channels",
     "description": "run some checks to see if the channels are configured as expected",
     "options": []
@@ -29,7 +29,7 @@ try {
 
   // SLASH COMMAND: set-bot-status
   await lib.discord.commands['@0.0.0'].create({
-    "guild_id": "991741295758430228",
+    "guild_id": `${context.params.event.guild_id}`,
     "name": "set-bot-status",
     "description": "set the status of Regens Unite Bot",
     "options": [
@@ -68,7 +68,7 @@ try {
 
   // SLASH COMMAND: clear-bot-status
   await lib.discord.commands['@0.0.0'].create({
-    "guild_id": "991741295758430228",
+    "guild_id": `${context.params.event.guild_id}`,
     "name": "clear-bot-status",
     "description": "clear the status of Regens Unite Bot",
     "options": []
