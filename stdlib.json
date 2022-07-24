@@ -44,6 +44,12 @@
       "subtype": {
         "prefix": "!rub-sudo"
       }
+    },
+    "functions/events/discord/message/create/prefix/rubarchive.js": {
+      "name": "discord.message.create.prefix",
+      "subtype": {
+        "prefix": "!rub-archive"
+      }
     }
   }
 }
