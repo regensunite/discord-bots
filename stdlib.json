@@ -38,6 +38,12 @@
       "subtype": {
         "prefix": "!rub-convenant"
       }
+    },
+    "functions/events/discord/message/create/prefix/rubsudo.js": {
+      "name": "discord.message.create.prefix",
+      "subtype": {
+        "prefix": "!rub-sudo"
+      }
     }
   }
 }
