@@ -50,6 +50,12 @@
       "subtype": {
         "prefix": "!rub-archive"
       }
+    },
+    "functions/events/discord/message/create/prefix/rubgetinvolved.js": {
+      "name": "discord.message.create.prefix",
+      "subtype": {
+        "prefix": "!rub-get-involved"
+      }
     }
   }
 }
