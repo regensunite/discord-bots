@@ -1,4 +1,7 @@
+const {onlyOwner} = require('../../../../../../utils/access-control/onlyOwner');
 const lib = require('lib')({token: process.env.STDLIB_SECRET_TOKEN});
+
+await onlyOwner(context)
 
 try {
   // NOTE: attempting to create a command that already exists, will update that command instead

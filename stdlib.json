@@ -32,6 +32,12 @@
       "subtype": {
         "prefix": "!rub-install"
       }
+    },
+    "functions/events/discord/message/create/prefix/rubconvenant.js": {
+      "name": "discord.message.create.prefix",
+      "subtype": {
+        "prefix": "!rub-convenant"
+      }
     }
   }
 }
