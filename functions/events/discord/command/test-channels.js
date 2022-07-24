@@ -331,11 +331,11 @@ try {
       expectPermissions(onboardingChannelPermissionBitsByRole)
 
       expectTextChannel(() => {
-        expectName(`${startHereIcon}✍🏼convenant`)
+        expectName(`${startHereIcon}🪂welcome`)
         expectPermissions(onboardingChannelPermissionBitsByRole)
       })
       expectTextChannel(() => {
-        expectName(`${startHereIcon}🪂welcome`)
+        expectName(`${startHereIcon}✍🏼convenant`)
         expectPermissions(onboardingChannelPermissionBitsByRole)
       })
       expectTextChannel(() => {
