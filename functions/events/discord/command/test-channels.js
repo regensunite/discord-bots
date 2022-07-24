@@ -52,6 +52,9 @@ try {
       EVERYONE: '@everyone',
       REGENS_UNITE_BOT: 'regens-unite-bot',
       CARL_BOT: 'carl-bot',
+      DEWORK_BOT: 'dework-bot',
+      SERVER_BOOSTER: 'server-booster',
+      REGULARS: 'regulars',
       MEMBER: 'member',
       ADMIN: 'admin', // NOTE: regular admin; doesn't have admin permissions by default, but can self-(un)assign the 'sudo' role
       SUDO: 'sudo', // NOTE: regular admin operating with elevated rights
@@ -119,6 +122,7 @@ try {
     const _defaultPermissionBitsByRole = {
       [roles.REGENS_UNITE_BOT]: ALL_PERMISSIONS,
       [roles.CARL_BOT]: ALL_PERMISSIONS,
+      [roles.DEWORK_BOT]: ALL_PERMISSIONS,
       [roles.SUPER_ADMIN]: ALL_PERMISSIONS,
       [roles.SUDO]: ALL_PERMISSIONS,
       [roles.ADMIN]: activateBits(0n, [
@@ -131,6 +135,12 @@ try {
         ..._defaultFlags,
       ]),
       [roles.MEMBER]: activateBits(0n, [
+        ..._defaultFlags,
+      ]),
+      [roles.REGULARS]: activateBits(0n, [
+        ..._defaultFlags,
+      ]),
+      [roles.SERVER_BOOSTER]: activateBits(0n, [
         ..._defaultFlags,
       ]),
       [roles.BRUSSELS_GENERAL]: activateBits(0n, [
@@ -165,6 +175,16 @@ try {
       //       (because we changed @everyone, which is effectively applied to all other roles, so the tests would complain about missing settings for the roles below)
 
       [roles.ADMIN]: activateBits(0n, [
+        ..._defaultFlags,
+        ..._readFlags,
+      ]),
+
+      [roles.REGULARS]: activateBits(0n, [
+        ..._defaultFlags,
+        ..._readFlags,
+      ]),
+
+      [roles.SERVER_BOOSTER]: activateBits(0n, [
         ..._defaultFlags,
         ..._readFlags,
       ]),
