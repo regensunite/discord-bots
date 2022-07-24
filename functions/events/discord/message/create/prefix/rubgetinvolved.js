@@ -12,7 +12,7 @@ await lib.discord.channels['@0.3.2'].messages.create({
       "type": "rich",
       "title": `Get Involved`,
       "description": [
-        `Click on one of the emojis below to join a locality and help make the next Regens Unite gathering happen:`
+        `Click on one of the emojis below to join a locality and help make the next Regens Unite gathering happen:`,
         `\n`,
         `- 🇳🇱 Amsterdam, September 2022`,
         `\n`,
