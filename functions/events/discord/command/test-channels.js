@@ -96,6 +96,8 @@ try {
     ]
 
     const _threadFlags = [
+      flags.EMBED_LINKS,
+      flags.ATTACH_FILES,
       flags.SEND_MESSAGES_IN_THREADS,
       flags.CREATE_PUBLIC_THREADS,
       flags.CREATE_PRIVATE_THREADS,
@@ -204,6 +206,19 @@ try {
       ]),
     }
 
+    // NOTE: use these settings for the main ANNOUNCEMENTS channel
+    const announcementsChannelPermissionBitsByRole = {
+      ..._defaultPermissionBitsByRole,
+      [roles.MEMBER]: activateBits(0n, [
+        ..._defaultFlags,
+        ..._readFlags,
+        // NOTE: no write permissions
+        ..._threadFlags,
+        ..._voiceFlags, // no-op in text channel
+        ..._stageFlags, // no-op in text channel
+      ]),
+    }
+
     // NOTE: use these settings for LOCALITY channels (i.e. channels that a member can see once they joined the locality)
     const localityChannelPermissionBitsByRole = (localityRoleName) => ({
       ..._defaultPermissionBitsByRole,
@@ -285,6 +300,20 @@ try {
       ]),
     }
 
+    // NOTE: use these settings for admin SUDO channels
+    const sudoChannelPermissionBitsByRole = {
+      ..._defaultPermissionBitsByRole,
+      [roles.ADMIN]: activateBits(0n, [
+        ..._defaultFlags,
+        ..._readFlags,
+        // NOTE: no write permissions
+        // NOTE: no thread permissions
+        ..._voiceFlags, // no-op in text channel
+        ..._stageFlags, // no-op in text channel
+      ]),
+      // NOTE: no need to configure sudo and super admin here, they already have all permissions
+    }
+
     // NOTE: use these settings for ADMIN channels
     const adminChannelPermissionBitsByRole = {
       ..._defaultPermissionBitsByRole,
@@ -361,7 +390,7 @@ try {
       const mainGardenIcon = `🌱`
       expectNewsChannel(() => {
         expectName(`${mainGardenIcon}${updatesIcon}announcements`)
-        expectPermissions(publicChannelPermissionBitsByRole)
+        expectPermissions(announcementsChannelPermissionBitsByRole)
       })
       expectTextChannel(() => {
         expectName(`${mainGardenIcon}${generalIcon}general`)
@@ -569,7 +598,7 @@ try {
 
       expectTextChannel(() => {
         expectName(`sudo`)
-        expectPermissions(adminChannelPermissionBitsByRole)
+        expectPermissions(sudoChannelPermissionBitsByRole)
       })
       expectTextChannel(() => {
         expectName(`admin-only`)
