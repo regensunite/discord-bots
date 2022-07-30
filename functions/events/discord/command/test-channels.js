@@ -118,6 +118,11 @@ try {
       flags.REQUEST_TO_SPEAK,
     ]
 
+    // NOTE: rights that admins have when they are NOT in sudo mode
+    const _adminFlags = [
+      flags.MANAGE_MESSAGES, // allow pinning messages, also allows deleting posts of other members
+    ]
+
     // NOTE: don't use directly in the tests (_ prefix)
     const _defaultPermissionBitsByRole = {
       [roles.REGENS_UNITE_BOT]: ALL_PERMISSIONS,
@@ -127,6 +132,7 @@ try {
       [roles.SUDO]: ALL_PERMISSIONS,
       [roles.ADMIN]: activateBits(0n, [
         ..._everyoneFlags,
+        ..._adminFlags,
       ]),
       [roles.VIEWING_ARCHIVE]: activateBits(0n, [
         ..._everyoneFlags,
@@ -177,6 +183,7 @@ try {
       [roles.ADMIN]: activateBits(0n, [
         ..._everyoneFlags,
         ..._readFlags,
+        ..._adminFlags,
       ]),
 
       [roles.REGULARS]: activateBits(0n, [
@@ -330,6 +337,7 @@ try {
         // NOTE: no thread permissions
         ..._voiceFlags, // no-op in text channel
         ..._stageFlags, // no-op in text channel
+        ..._adminFlags,
       ]),
       // NOTE: no need to configure sudo and super admin here, they already have all permissions
     }
@@ -344,6 +352,7 @@ try {
         ..._threadFlags,
         ..._voiceFlags,
         ..._stageFlags,
+        ..._adminFlags,
       ]),
       // NOTE: no need to configure sudo and super admin here, they already have all permissions
     }
