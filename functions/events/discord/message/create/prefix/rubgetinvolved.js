@@ -3,6 +3,8 @@ const lib = require('lib')({token: process.env.STDLIB_SECRET_TOKEN});
 
 await onlyOwner(context)
 
+// TODO: notify users that they should sign the convenant first if they haven't done so yet
+
 await lib.discord.channels['@0.3.2'].messages.create({
   "channel_id": `${context.params.event.channel_id}`,
   "content": "",
