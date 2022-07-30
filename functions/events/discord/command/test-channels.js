@@ -78,7 +78,7 @@ try {
     }
 
     // NOTE: don't use directly in the tests (_ prefix)
-    const _defaultFlags = [
+    const _everyoneFlags = [
       flags.CREATE_INSTANT_INVITE,
       flags.CHANGE_NICKNAME,
       flags.USE_EXTERNAL_EMOJIS, // NOTE: you need to have write/reaction permissions to use this permission
@@ -126,33 +126,33 @@ try {
       [roles.SUPER_ADMIN]: ALL_PERMISSIONS,
       [roles.SUDO]: ALL_PERMISSIONS,
       [roles.ADMIN]: activateBits(0n, [
-        ..._defaultFlags,
+        ..._everyoneFlags,
       ]),
       [roles.VIEWING_ARCHIVE]: activateBits(0n, [
-        ..._defaultFlags,
+        ..._everyoneFlags,
       ]),
       [roles.EVERYONE]: activateBits(0n, [
-        ..._defaultFlags,
+        ..._everyoneFlags,
       ]),
       [roles.MEMBER]: activateBits(0n, [
-        ..._defaultFlags,
+        ..._everyoneFlags,
       ]),
       [roles.REGULARS]: activateBits(0n, [
-        ..._defaultFlags,
+        ..._everyoneFlags,
       ]),
       [roles.SERVER_BOOSTER]: activateBits(0n, [
-        ..._defaultFlags,
+        ..._everyoneFlags,
       ]),
       [roles.BRUSSELS_GENERAL]: activateBits(0n, [
-        ..._defaultFlags,
+        ..._everyoneFlags,
       ]),
       // NOTE: other roles for Brussels locality currently point to "brussels-general" as well
       [roles.BOGOTA_GENERAL]: activateBits(0n, [
-        ..._defaultFlags,
+        ..._everyoneFlags,
       ]),
       // NOTE: other roles for Brussels locality currently point to "bogota-general" as well
       [roles.AMSTERDAM_GENERAL]: activateBits(0n, [
-        ..._defaultFlags,
+        ..._everyoneFlags,
       ]),
       // NOTE: other roles for Brussels locality currently point to "amsterdam-general" as well
     }
@@ -161,11 +161,11 @@ try {
     const onboardingChannelPermissionBitsByRole = {
       ..._defaultPermissionBitsByRole,
       [roles.EVERYONE]: activateBits(0n, [
-        ..._defaultFlags,
+        ..._everyoneFlags,
         ..._readFlags,
       ]),
       [roles.MEMBER]: activateBits(0n, [
-        ..._defaultFlags,
+        ..._everyoneFlags,
         ..._readFlags,
         ..._voiceFlags,
         ..._stageFlags,
@@ -175,39 +175,39 @@ try {
       //       (because we changed @everyone, which is effectively applied to all other roles, so the tests would complain about missing settings for the roles below)
 
       [roles.ADMIN]: activateBits(0n, [
-        ..._defaultFlags,
+        ..._everyoneFlags,
         ..._readFlags,
       ]),
 
       [roles.REGULARS]: activateBits(0n, [
-        ..._defaultFlags,
+        ..._everyoneFlags,
         ..._readFlags,
       ]),
 
       [roles.SERVER_BOOSTER]: activateBits(0n, [
-        ..._defaultFlags,
+        ..._everyoneFlags,
         ..._readFlags,
       ]),
 
       [roles.VIEWING_ARCHIVE]: activateBits(0n, [
-        ..._defaultFlags,
+        ..._everyoneFlags,
         ..._readFlags,
       ]),
 
       [roles.BRUSSELS_GENERAL]: activateBits(0n, [
-        ..._defaultFlags,
+        ..._everyoneFlags,
         ..._readFlags,
       ]),
       // NOTE: other roles for Brussels locality currently point to "brussels-general" as well
 
       [roles.BOGOTA_GENERAL]: activateBits(0n, [
-        ..._defaultFlags,
+        ..._everyoneFlags,
         ..._readFlags,
       ]),
       // NOTE: other roles for Brussels locality currently point to "bogota-general" as well
 
       [roles.AMSTERDAM_GENERAL]: activateBits(0n, [
-        ..._defaultFlags,
+        ..._everyoneFlags,
         ..._readFlags,
       ]),
       // NOTE: other roles for Brussels locality currently point to "amsterdam-general" as well
@@ -217,7 +217,7 @@ try {
     const publicChannelPermissionBitsByRole = {
       ..._defaultPermissionBitsByRole,
       [roles.MEMBER]: activateBits(0n, [
-        ..._defaultFlags,
+        ..._everyoneFlags,
         ..._readFlags,
         ..._writeFlags,
         ..._threadFlags,
@@ -230,7 +230,7 @@ try {
     const announcementsChannelPermissionBitsByRole = {
       ..._defaultPermissionBitsByRole,
       [roles.MEMBER]: activateBits(0n, [
-        ..._defaultFlags,
+        ..._everyoneFlags,
         ..._readFlags,
         // NOTE: no write permissions
         ..._threadFlags,
@@ -243,7 +243,7 @@ try {
     const localityChannelPermissionBitsByRole = (localityRoleName) => ({
       ..._defaultPermissionBitsByRole,
       [localityRoleName]: activateBits(0n, [
-        ..._defaultFlags,
+        ..._everyoneFlags,
         ..._readFlags,
         ..._writeFlags,
         ..._threadFlags,
@@ -256,7 +256,7 @@ try {
     const localityUpdateChannelPermissionBitsByRole = (localityRoleName) => ({
       ..._defaultPermissionBitsByRole,
       [roles.MEMBER]: activateBits(0n, [
-        ..._defaultFlags,
+        ..._everyoneFlags,
         ..._readFlags,
         // NOTE: write not allowed
         ..._threadFlags,
@@ -264,7 +264,7 @@ try {
         // NOTE: cannot modify stage permissions of text channel
       ]),
       [localityRoleName]: activateBits(0n, [
-        ..._defaultFlags,
+        ..._everyoneFlags,
         ..._readFlags,
         ..._writeFlags,
         ..._threadFlags,
@@ -277,7 +277,7 @@ try {
     const localityVoiceChannelPermissionBitsByRole = (localityRoleName) => ({
       ..._defaultPermissionBitsByRole,
       [roles.MEMBER]: activateBits(0n, [
-        ..._defaultFlags,
+        ..._everyoneFlags,
         ..._readFlags,
         ..._writeFlags,
         // NOTE: cannot modify thread permissions of voice channel
@@ -285,7 +285,7 @@ try {
         // NOTE: cannot modify stage permissions of voice channel
       ]),
       [localityRoleName]: activateBits(0n, [
-        ..._defaultFlags,
+        ..._everyoneFlags,
         ..._readFlags,
         ..._writeFlags,
         ..._threadFlags,
@@ -298,7 +298,7 @@ try {
     const projectChannelPermissionBitsByRole = {
       ..._defaultPermissionBitsByRole,
       [roles.MEMBER]: activateBits(0n, [
-        ..._defaultFlags,
+        ..._everyoneFlags,
         ..._readFlags,
         ..._writeFlags,
         ..._threadFlags,
@@ -311,7 +311,7 @@ try {
     const breakoutChannelPermissionBitsByRole = {
       ..._defaultPermissionBitsByRole,
       [roles.MEMBER]: activateBits(0n, [
-        ..._defaultFlags,
+        ..._everyoneFlags,
         ..._readFlags,
         ..._writeFlags,
         ..._threadFlags,
@@ -324,7 +324,7 @@ try {
     const sudoChannelPermissionBitsByRole = {
       ..._defaultPermissionBitsByRole,
       [roles.ADMIN]: activateBits(0n, [
-        ..._defaultFlags,
+        ..._everyoneFlags,
         ..._readFlags,
         // NOTE: no write permissions
         // NOTE: no thread permissions
@@ -338,7 +338,7 @@ try {
     const adminChannelPermissionBitsByRole = {
       ..._defaultPermissionBitsByRole,
       [roles.ADMIN]: activateBits(0n, [
-        ..._defaultFlags,
+        ..._everyoneFlags,
         ..._readFlags,
         ..._writeFlags,
         ..._threadFlags,
@@ -352,7 +352,7 @@ try {
     const archiveChannelPermissionBitsByRole = {
       ..._defaultPermissionBitsByRole,
       [roles.VIEWING_ARCHIVE]: activateBits(0n, [
-        ..._defaultFlags,
+        ..._everyoneFlags,
         ..._readFlags,
       ]),
     }
@@ -361,7 +361,7 @@ try {
     const exploreArchiveChannelPermissionBitsByRole = {
       ..._defaultPermissionBitsByRole,
       [roles.MEMBER]: activateBits(0n, [
-        ..._defaultFlags,
+        ..._everyoneFlags,
         ..._readFlags,
       ]),
     }
