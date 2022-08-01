@@ -18,11 +18,13 @@ await createOrUpdateMessage(lib, channelId, messageId, {
       "description": [
         `Click on one of the emojis below to join a locality and help make the next Regens Unite gathering happen:`,
         `\n`,
-        `- 🇳🇱 Amsterdam, September 2022`,
+        `- 🇳🇱 **Amsterdam**, September 2022`,
         `\n`,
-        `- 🇨🇴 Bogota, October 2022`,
+        `- 🇨🇴 **Bogota**, October 2022`,
         `\n`,
-        `- 🇧🇪 Brussels, May 2023`,
+        `- 🇧🇪 **Brussels**, May 2023`,
+        `\n`,
+        `- 🇩🇪 **Berlin**, TBD`,
       ].join(''),
       "color": 0x295846,
     }

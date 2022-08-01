@@ -23,6 +23,7 @@ await createOrUpdateMessage(lib, channelId, messageId, {
       "type": "rich",
       "title": `The Regens Unite Commons`,
       "description": [
+        // TODO
         `By clicking on the ✍🏼 emoji under this message, you agree to act within these principles:`,
         `1. We are all members and co-owners of this common, so we all contribute in the best way we can to maintain and develop it. We practice artful participation.`,
         `2. We take ownership of creating a safe and brave space that supports vulnerability and intimacy. At the same time, we allow room for experimentation and learning new skills.`,
