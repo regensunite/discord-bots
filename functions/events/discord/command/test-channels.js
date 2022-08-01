@@ -75,6 +75,11 @@ try {
       AMSTERDAM_FACILITATORS: 'amsterdam-general',
       AMSTERDAM_COMMUNICATION: 'amsterdam-general',
       AMSTERDAM_LOGISTICS: 'amsterdam-general',
+      BERLIN_GENERAL: 'berlin-general',
+      BERLIN_FINANCE: 'berlin-general',
+      BERLIN_FACILITATORS: 'berlin-general',
+      BERLIN_COMMUNICATION: 'berlin-general',
+      BERLIN_LOGISTICS: 'berlin-general',
     }
 
     // NOTE: don't use directly in the tests (_ prefix)
@@ -156,11 +161,15 @@ try {
       [roles.BOGOTA_GENERAL]: activateBits(0n, [
         ..._everyoneFlags,
       ]),
-      // NOTE: other roles for Brussels locality currently point to "bogota-general" as well
+      // NOTE: other roles for Bogota locality currently point to "bogota-general" as well
       [roles.AMSTERDAM_GENERAL]: activateBits(0n, [
         ..._everyoneFlags,
       ]),
-      // NOTE: other roles for Brussels locality currently point to "amsterdam-general" as well
+      // NOTE: other roles for Amsterdam locality currently point to "amsterdam-general" as well
+      [roles.BERLIN_GENERAL]: activateBits(0n, [
+        ..._everyoneFlags,
+      ]),
+      // NOTE: other roles for Berlin locality currently point to "berlin-general" as well
     }
 
     // NOTE: use these settings for ONBOARDING channels (i.e. channels that are visible before verification)
@@ -211,13 +220,19 @@ try {
         ..._everyoneFlags,
         ..._readFlags,
       ]),
-      // NOTE: other roles for Brussels locality currently point to "bogota-general" as well
+      // NOTE: other roles for Bogota locality currently point to "bogota-general" as well
 
       [roles.AMSTERDAM_GENERAL]: activateBits(0n, [
         ..._everyoneFlags,
         ..._readFlags,
       ]),
-      // NOTE: other roles for Brussels locality currently point to "amsterdam-general" as well
+      // NOTE: other roles for Amsterdam locality currently point to "amsterdam-general" as well
+
+      [roles.BERLIN_GENERAL]: activateBits(0n, [
+        ..._everyoneFlags,
+        ..._readFlags,
+      ]),
+      // NOTE: other roles for Berlin locality currently point to "berlin-general" as well
     }
 
     // NOTE: use these settings for PUBLIC channels (i.e. channels that every member can read and write to)
@@ -529,34 +544,70 @@ try {
       expectName(`━━ AMSTERDAM ━━`)
       expectPermissions(localityChannelPermissionBitsByRole(roles.AMSTERDAM_GENERAL))
 
-      const bogotaIcon = `🇳🇱`
+      const amsterdamIcon = `🇳🇱`
       expectTextChannel(() => {
-        expectName(`${bogotaIcon}${updatesIcon}updates`)
+        expectName(`${amsterdamIcon}${updatesIcon}updates`)
         expectPermissions(localityUpdateChannelPermissionBitsByRole(roles.AMSTERDAM_GENERAL))
       })
       expectTextChannel(() => {
-        expectName(`${bogotaIcon}${generalIcon}general`)
+        expectName(`${amsterdamIcon}${generalIcon}general`)
         expectPermissions(localityChannelPermissionBitsByRole(roles.AMSTERDAM_GENERAL))
       })
       expectTextChannel(() => {
-        expectName(`${bogotaIcon}${financeIcon}finance`)
+        expectName(`${amsterdamIcon}${financeIcon}finance`)
         expectPermissions(localityChannelPermissionBitsByRole(roles.AMSTERDAM_FINANCE))
       })
       expectTextChannel(() => {
-        expectName(`${bogotaIcon}${facilitatorsIcon}facilitators`)
+        expectName(`${amsterdamIcon}${facilitatorsIcon}facilitators`)
         expectPermissions(localityChannelPermissionBitsByRole(roles.AMSTERDAM_FACILITATORS))
       })
       expectTextChannel(() => {
-        expectName(`${bogotaIcon}${communicationIcon}communication`)
+        expectName(`${amsterdamIcon}${communicationIcon}communication`)
         expectPermissions(localityChannelPermissionBitsByRole(roles.AMSTERDAM_COMMUNICATION))
       })
       expectTextChannel(() => {
-        expectName(`${bogotaIcon}${logisticsIcon}logistics`)
+        expectName(`${amsterdamIcon}${logisticsIcon}logistics`)
         expectPermissions(localityChannelPermissionBitsByRole(roles.AMSTERDAM_LOGISTICS))
       })
       expectVoiceChannel(() => {
-        expectName(`${bogotaIcon}${meetingRoomIcon}meeting-room`)
+        expectName(`${amsterdamIcon}${meetingRoomIcon}meeting-room`)
         expectPermissions(localityVoiceChannelPermissionBitsByRole(roles.AMSTERDAM_GENERAL))
+      })
+    })
+
+    // category: BERLIN
+    expectCategory(() => {
+      expectName(`━━ BERLIN ━━`)
+      expectPermissions(localityChannelPermissionBitsByRole(roles.BERLIN_GENERAL))
+
+      const berlinIcon = `🇩🇪`
+      expectTextChannel(() => {
+        expectName(`${berlinIcon}${updatesIcon}updates`)
+        expectPermissions(localityUpdateChannelPermissionBitsByRole(roles.BERLIN_GENERAL))
+      })
+      expectTextChannel(() => {
+        expectName(`${berlinIcon}${generalIcon}general`)
+        expectPermissions(localityChannelPermissionBitsByRole(roles.BERLIN_GENERAL))
+      })
+      expectTextChannel(() => {
+        expectName(`${berlinIcon}${financeIcon}finance`)
+        expectPermissions(localityChannelPermissionBitsByRole(roles.BERLIN_FINANCE))
+      })
+      expectTextChannel(() => {
+        expectName(`${berlinIcon}${facilitatorsIcon}facilitators`)
+        expectPermissions(localityChannelPermissionBitsByRole(roles.BERLIN_FACILITATORS))
+      })
+      expectTextChannel(() => {
+        expectName(`${berlinIcon}${communicationIcon}communication`)
+        expectPermissions(localityChannelPermissionBitsByRole(roles.BERLIN_COMMUNICATION))
+      })
+      expectTextChannel(() => {
+        expectName(`${berlinIcon}${logisticsIcon}logistics`)
+        expectPermissions(localityChannelPermissionBitsByRole(roles.BERLIN_LOGISTICS))
+      })
+      expectVoiceChannel(() => {
+        expectName(`${berlinIcon}${meetingRoomIcon}meeting-room`)
+        expectPermissions(localityVoiceChannelPermissionBitsByRole(roles.BERLIN_GENERAL))
       })
     })
 
