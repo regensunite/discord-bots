@@ -126,6 +126,7 @@ try {
     // NOTE: rights that admins have when they are NOT in sudo mode
     const _adminFlags = [
       flags.MANAGE_MESSAGES, // allow pinning messages, also allows deleting posts of other members
+      flags.MANAGE_EVENTS,
     ]
 
     // NOTE: don't use directly in the tests (_ prefix)
