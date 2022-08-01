@@ -1,4 +1,5 @@
 const {onlyOwner} = require('../../../../../../utils/access-control/onlyOwner');
+const { createOrUpdateMessage } = require('../../../../../../utils/discord/create-or-update-message');
 const lib = require('lib')({token: process.env.STDLIB_SECRET_TOKEN});
 
 await onlyOwner(context)
@@ -12,10 +13,11 @@ if (!infoBoothChannel) {
   throw new Error('could not find info-booth channel')
 }
 
-await lib.discord.channels['@0.3.2'].messages.create({
-  "channel_id": `${context.params.event.channel_id}`,
-  "content": "",
-  "tts": false,
+console.log(context.params.event.content)
+
+const channelId = context.params.event.channel_id
+const messageId = context.params.event.content.split(' ')[1]?.trim()
+await createOrUpdateMessage(lib, channelId, messageId, {
   "embeds": [
     {
       "type": "rich",
@@ -34,4 +36,4 @@ await lib.discord.channels['@0.3.2'].messages.create({
       "color": 0x295846,
     }
   ]
-});
+})
