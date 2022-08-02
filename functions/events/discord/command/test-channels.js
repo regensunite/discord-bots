@@ -619,7 +619,7 @@ try {
 
       const projectsIcon = `🔥`
       expectTextChannel(() => {
-        expectName(`${projectsIcon}💭discord-changes`)
+        expectName(`${projectsIcon}💭discord`)
         expectPermissions(projectChannelPermissionBitsByRole)
       })
       expectTextChannel(() => {
