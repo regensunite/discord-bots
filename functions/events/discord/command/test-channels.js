@@ -60,6 +60,9 @@ try {
       SUDO: 'sudo', // NOTE: regular admin operating with elevated rights
       SUPER_ADMIN: 'super-admin', // NOTE: permanent admin rights
       VIEWING_ARCHIVE: 'viewing-archive', // NOTE: role to view the archive (self-assignable by members)
+      CIRCLE_COMMS: 'comms-pr-marketing-circle',
+      CIRCLE_EVENTS: 'events-circle',
+      CIRCLE_DAO: 'dao-circle',
       BRUSSELS_GENERAL: 'brussels-general',
       BRUSSELS_FINANCE: 'brussels-general',
       BRUSSELS_FACILITATORS: 'brussels-general',
@@ -155,6 +158,15 @@ try {
       [roles.SERVER_BOOSTER]: activateBits(0n, [
         ..._everyoneFlags,
       ]),
+      [roles.CIRCLE_COMMS]: activateBits(0n, [
+        ..._everyoneFlags,
+      ]),
+      [roles.CIRCLE_EVENTS]: activateBits(0n, [
+        ..._everyoneFlags,
+      ]),
+      [roles.CIRCLE_DAO]: activateBits(0n, [
+        ..._everyoneFlags,
+      ]),
       [roles.BRUSSELS_GENERAL]: activateBits(0n, [
         ..._everyoneFlags,
       ]),
@@ -211,6 +223,21 @@ try {
         ..._readFlags,
       ]),
 
+      [roles.CIRCLE_COMMS]: activateBits(0n, [
+        ..._everyoneFlags,
+        ..._readFlags,
+      ]),
+
+      [roles.CIRCLE_EVENTS]: activateBits(0n, [
+        ..._everyoneFlags,
+        ..._readFlags,
+      ]),
+
+      [roles.CIRCLE_DAO]: activateBits(0n, [
+        ..._everyoneFlags,
+        ..._readFlags,
+      ]),
+
       [roles.BRUSSELS_GENERAL]: activateBits(0n, [
         ..._everyoneFlags,
         ..._readFlags,
@@ -260,6 +287,23 @@ try {
         ..._voiceFlags, // no-op in text channel
         ..._stageFlags, // no-op in text channel
       ]),
+    }
+
+    // NOTE: use these settings for CIRCLE channels
+    const circleTextChannelPermissionBitsByRole = (circleRoleName) => {
+      const permissions = { ..._defaultPermissionBitsByRole }
+
+      if (circleRoleName) {
+        permissions[circleRoleName] = activateBits(0n, [
+          ..._everyoneFlags,
+          ..._readFlags,
+          ..._writeFlags,
+          ..._threadFlags,
+          // NOTE: no voice and stage permissions
+        ])
+      }
+
+      return permissions
     }
 
     // NOTE: use these settings for LOCALITY channels (i.e. channels that a member can see once they joined the locality)
@@ -465,6 +509,26 @@ try {
       expectVoiceChannel(() => {
         expectName(`${mainGardenIcon}${meetingRoomIcon}meeting-room`)
         expectPermissions(publicChannelPermissionBitsByRole)
+      })
+    })
+
+    // category: CIRCLES
+    expectCategory(() => {
+      expectName(`━━ MY CIRCLES ━━`)
+      expectPermissions(circleTextChannelPermissionBitsByRole())
+
+      const circleIcon = `⭕`
+      expectTextChannel(() => {
+        expectName(`${circleIcon}📡comms-pr-marketing`)
+        expectPermissions(circleTextChannelPermissionBitsByRole(roles.CIRCLE_COMMS))
+      })
+      expectTextChannel(() => {
+        expectName(`${circleIcon}🌱events`)
+        expectPermissions(circleTextChannelPermissionBitsByRole(roles.CIRCLE_EVENTS))
+      })
+      expectTextChannel(() => {
+        expectName(`${circleIcon}🔅dao-ops`)
+        expectPermissions(circleTextChannelPermissionBitsByRole(roles.CIRCLE_DAO))
       })
     })
 
