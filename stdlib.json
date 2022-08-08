@@ -56,6 +56,18 @@
       "subtype": {
         "prefix": "!rub-get-involved"
       }
+    },
+    "functions/events/discord/message/create/prefix/rubcircles.js": {
+      "name": "discord.message.create.prefix",
+      "subtype": {
+        "prefix": "!rub-circles"
+      }
+    },
+    "functions/events/discord/message/create/prefix/rubaffinities.js": {
+      "name": "discord.message.create.prefix",
+      "subtype": {
+        "prefix": "!rub-affinities"
+      }
     }
   }
 }
