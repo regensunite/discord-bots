@@ -534,7 +534,7 @@ try {
 
     // category: BRUSSELS
     expectCategory(() => {
-      expectName(`━━ BRUSSELS ━━`)
+      expectName(`━━ BRUSSELS, MAY 2023 ━━`)
       expectPermissions(localityChannelPermissionBitsByRole(roles.BRUSSELS_GENERAL))
       
       const brusselsIcon = `🇧🇪`
@@ -570,7 +570,7 @@ try {
 
     // category: BOGOTA
     expectCategory(() => {
-      expectName(`━━ BOGOTA ━━`)
+      expectName(`━━ BOGOTA, OCT 2022 ━━`)
       expectPermissions(localityChannelPermissionBitsByRole(roles.BOGOTA_GENERAL))
 
       const bogotaIcon = `🇨🇴`
@@ -606,7 +606,7 @@ try {
 
     // category: AMSTERDAM
     expectCategory(() => {
-      expectName(`━━ AMSTERDAM ━━`)
+      expectName(`━━ AMSTERDAM, SEP 2022 ━━`)
       expectPermissions(localityChannelPermissionBitsByRole(roles.AMSTERDAM_GENERAL))
 
       const amsterdamIcon = `🇳🇱`
@@ -642,7 +642,7 @@ try {
 
     // category: BERLIN
     expectCategory(() => {
-      expectName(`━━ BERLIN ━━`)
+      expectName(`━━ BERLIN, SEP 2022 ━━`)
       expectPermissions(localityChannelPermissionBitsByRole(roles.BERLIN_GENERAL))
 
       const berlinIcon = `🇩🇪`
@@ -700,6 +700,14 @@ try {
       })
       expectTextChannel(() => {
         expectName(`${projectsIcon}📗handbook`)
+        expectPermissions(projectChannelPermissionBitsByRole)
+      })
+      expectTextChannel(() => {
+        expectName(`${projectsIcon}⚖legal`)
+        expectPermissions(projectChannelPermissionBitsByRole)
+      })
+      expectTextChannel(() => {
+        expectName(`${projectsIcon}🖥website`)
         expectPermissions(projectChannelPermissionBitsByRole)
       })
     })
