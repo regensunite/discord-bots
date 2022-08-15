@@ -31,7 +31,7 @@ await createOrUpdateMessage(lib, channelId, messageId, {
         `5. Everyone plays a role in creating a warm, inclusive and welcoming environment and actively seek out and enable people with different experiences and skills to contribute. We organise in a way that makes contributing as accessible as possible. We aim to be reliable so we can count on each other for help and support.`,
         `6. When together, we look to create the conditions for emergence while recognising the messiness, wonder, and challenge of being human. Being human is what unites us. This means presence, openness, and honouring silence and reflection as much as productivity and creativity. Sadness and worry have just as much of a place as joy and laughter, feminine aspects as much as masculine, and slow and small being a key part of the fractal of life.`,
         `7. We utilise minimum viable decision-making protocols to balance individual autonomy with awareness of how our decisions impact others and the commons.`,
-        `8. We welcome conflict and tensions as a way to grow ,inspired by Ostrom's Principles for Managing a Commons in all ways, which includes how we respond to conflict.`,
+        `8. We welcome conflict and tensions as a way to grow. We are inspired by [Ostrom's Principles for Managing a Commons](https://earthbound.report/2018/01/15/elinor-ostroms-8-rules-for-managing-the-commons/) in all ways, which includes how we respond to conflict.`,
         `By clicking on the ✍🏼 emoji below, you agree to act within these principles.`,
         // TODO
         // `6. Before making a significant decision for the commons, we seek advice and consent from our peers. Read more about our decision making protocol in channel: <#${infoBoothChannel.id}>.`,
