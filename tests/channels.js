@@ -2,7 +2,7 @@ const { createTable } = require('../utils/table.js')
 const { typeToStr } = require('../utils/channels.js')
 const { AssertionError, expect } = require('chai');
 const { assertBigInt, assertString } = require('../utils/assert.js');
-const { permissionBitsToString, calculateRoleOverwrites, calculateRoleBasePermissions, diffPermissionBits, getPermissionNames } = require('../utils/discord/permissions.js');
+const { permissionBitsToString, calculateRoleOverwrites, calculateRoleBasePermissions, diffPermissionBits, getPermissionNames, EVERYONE_ROLE_NAME } = require('../utils/discord/permissions.js');
 
 // global namespace of the test runner (key added to global scrope, under which test runner public API resides)
 const RUNNER_KEY = 'ctrK_' + Math.floor(Math.random() * Math.pow(10, 6));
@@ -191,12 +191,16 @@ const expectPermissionsForRole = _wrap(function (expectedRoleName, expectedRoleP
   )
 })
 
-const expectPermissions = _wrap(function (permissionsByRole) {
+// NOTE: by default (inheritEveryoneRole = true), this expectation will try to locate the permissions for role @everyone
+//       and add those permissions to the role under test
+const expectPermissions = _wrap(function (permissionsByRole, inheritEveryoneRole = true) {
   const guild = this[RUNNER_KEY].getGuild();
 
   for (let role of guild.roles) {
     const expectedRolePermissionBits = permissionsByRole?.hasOwnProperty(role.name) ? permissionsByRole[role.name] : 0n
-    expectPermissionsForRole(role.name, expectedRolePermissionBits)
+    const everyoneRolePermissionBits = permissionsByRole?.hasOwnProperty(EVERYONE_ROLE_NAME) ? permissionsByRole[EVERYONE_ROLE_NAME] : 0n
+    const combinedPermissionBits = expectedRolePermissionBits | everyoneRolePermissionBits
+    expectPermissionsForRole(role.name, inheritEveryoneRole ? combinedPermissionBits : expectedRolePermissionBits)
   }
 })
 

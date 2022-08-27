@@ -177,6 +177,8 @@ const isFlagSet = (bits, flag) => {
   return (bits & flag) === flag
 };
 
+const EVERYONE_ROLE_NAME = '@everyone'
+
 const getRoleById = (roles, roleId) => {
   const role = roles.find(role => role.id === roleId)
   
@@ -396,4 +398,5 @@ module.exports = {
   permissionStringToBits,
   getPermissionNames,
   diffPermissionBits,
+  EVERYONE_ROLE_NAME,
 }
