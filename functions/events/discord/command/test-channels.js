@@ -147,6 +147,16 @@ try {
       [roles.REGENS_UNITE_BOT]: ALL_PERMISSIONS,
       [roles.CARL_BOT]: ALL_PERMISSIONS,
       [roles.DEWORK_BOT]: ALL_PERMISSIONS,
+      [roles.SIMPLE_POLL_BOT]: activateBits(0n, [
+        flags.__IGNORE_EVERYONE_PERMISSIONS,
+        ..._everyoneFlags,
+        flags.VIEW_CHANNEL,
+        flags.SEND_MESSAGES,
+        flags.EMBED_LINKS,
+        flags.ADD_REACTIONS,
+        flags.USE_EXTERNAL_EMOJIS,
+        flags.READ_MESSAGE_HISTORY,
+      ]),
       [roles.SUPER_ADMIN]: ALL_PERMISSIONS,
       [roles.SUDO]: ALL_PERMISSIONS,
       [roles.ADMIN]: activateBits(0n, [
