@@ -180,6 +180,24 @@ try {
       ]),
     }
 
+    // NOTE: use these settings for PUBLIC VOICE channels
+    const publicVoiceChannelPermissionBitsByRole = {
+      ..._defaultPermissionBitsByRole,
+      // NOTE: voice channels should be visible by @everyone so events will appear for @everyone
+      [roles.EVERYONE]: activateBits(0n, [
+        // NOTE: "expectPermissions" inherits these permissions for other roles, in most cases
+        ..._everyoneFlags,
+        ..._viewEventsFlags,
+      ]),
+      [roles.MEMBER]: activateBits(0n, [
+        ..._readFlags,
+        ..._writeFlags,
+        ..._threadFlags,
+        ..._voiceFlags,
+        ..._stageFlags,
+      ]),
+    }
+
     // NOTE: use these settings for the main ANNOUNCEMENTS channel
     const announcementsChannelPermissionBitsByRole = {
       ..._defaultPermissionBitsByRole,
@@ -242,6 +260,12 @@ try {
     // NOTE: use these settings for LOCALITY VOICE channels (i.e. voice channels that every member can use)
     const localityVoiceChannelPermissionBitsByRole = (localityRoleName) => ({
       ..._defaultPermissionBitsByRole,
+      // NOTE: voice channels should be visible by @everyone so events will appear for @everyone
+      [roles.EVERYONE]: activateBits(0n, [
+        // NOTE: "expectPermissions" inherits these permissions for other roles, in most cases
+        ..._everyoneFlags,
+        ..._viewEventsFlags,
+      ]),
       [roles.MEMBER]: activateBits(0n, [
         ..._readFlags,
         ..._writeFlags,
@@ -270,9 +294,15 @@ try {
       ]),
     }
 
-    // NOTE: use these settings for UTILITY channels
-    const breakoutChannelPermissionBitsByRole = {
+    // NOTE: use these settings for BREAKOUT channels
+    const breakoutVoiceChannelPermissionBitsByRole = {
       ..._defaultPermissionBitsByRole,
+      // NOTE: voice channels should be visible by @everyone so events will appear for @everyone
+      [roles.EVERYONE]: activateBits(0n, [
+        // NOTE: "expectPermissions" inherits these permissions for other roles, in most cases
+        ..._everyoneFlags,
+        ..._viewEventsFlags,
+      ]),
       [roles.MEMBER]: activateBits(0n, [
         ..._readFlags,
         ..._writeFlags,
@@ -399,7 +429,7 @@ try {
       })
       expectVoiceChannel(() => {
         expectName(`${mainGardenIcon}${meetingRoomIcon}meeting-room`)
-        expectPermissions(publicChannelPermissionBitsByRole)
+        expectPermissions(publicVoiceChannelPermissionBitsByRole)
       })
     })
 
@@ -606,32 +636,32 @@ try {
     // category: BREAKOUT ROOMS
     expectCategory(() => {
       expectName(`━━ BREAKOUT ROOMS ━━`)
-      expectPermissions(breakoutChannelPermissionBitsByRole)
+      expectPermissions(breakoutVoiceChannelPermissionBitsByRole)
 
       const breakoutIcon = `🏡`
       expectStageChannel(() => {
         expectName(`${breakoutIcon}🍿main-stage`)
-        expectPermissions(breakoutChannelPermissionBitsByRole)
+        expectPermissions(breakoutVoiceChannelPermissionBitsByRole)
       })
       expectVoiceChannel(() => {
         expectName(`${breakoutIcon}🎤voice-1`)
-        expectPermissions(breakoutChannelPermissionBitsByRole)
+        expectPermissions(breakoutVoiceChannelPermissionBitsByRole)
       })
       expectVoiceChannel(() => {
         expectName(`${breakoutIcon}🎤voice-2`)
-        expectPermissions(breakoutChannelPermissionBitsByRole)
+        expectPermissions(breakoutVoiceChannelPermissionBitsByRole)
       })
       expectVoiceChannel(() => {
         expectName(`${breakoutIcon}🎤voice-3`)
-        expectPermissions(breakoutChannelPermissionBitsByRole)
+        expectPermissions(breakoutVoiceChannelPermissionBitsByRole)
       })
       expectVoiceChannel(() => {
         expectName(`${breakoutIcon}🎤voice-4`)
-        expectPermissions(breakoutChannelPermissionBitsByRole)
+        expectPermissions(breakoutVoiceChannelPermissionBitsByRole)
       })
       expectVoiceChannel(() => {
         expectName(`${breakoutIcon}🎤voice-5`)
-        expectPermissions(breakoutChannelPermissionBitsByRole)
+        expectPermissions(breakoutVoiceChannelPermissionBitsByRole)
       })
     })
 
