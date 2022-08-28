@@ -2,7 +2,7 @@ const { createTable } = require('../utils/table.js')
 const { typeToStr } = require('../utils/channels.js')
 const { AssertionError, expect } = require('chai');
 const { assertBigInt, assertString } = require('../utils/assert.js');
-const { permissionBitsToString, calculateRoleOverwrites, calculateRoleBasePermissions, diffPermissionBits, getPermissionNames, EVERYONE_ROLE_NAME } = require('../utils/discord/permissions.js');
+const { permissionBitsToString, calculateRoleOverwrites, calculateRoleBasePermissions, diffPermissionBits, getPermissionNames, EVERYONE_ROLE_NAME, flags, isFlagSet } = require('../utils/discord/permissions.js');
 
 // global namespace of the test runner (key added to global scrope, under which test runner public API resides)
 const RUNNER_KEY = 'ctrK_' + Math.floor(Math.random() * Math.pow(10, 6));
@@ -197,10 +197,23 @@ const expectPermissions = _wrap(function (permissionsByRole, inheritEveryoneRole
   const guild = this[RUNNER_KEY].getGuild();
 
   for (let role of guild.roles) {
+    // permission bits for given role (none by default)
     const expectedRolePermissionBits = permissionsByRole?.hasOwnProperty(role.name) ? permissionsByRole[role.name] : 0n
+
+    // permission bits for @everyone role (none by default)
     const everyoneRolePermissionBits = permissionsByRole?.hasOwnProperty(EVERYONE_ROLE_NAME) ? permissionsByRole[EVERYONE_ROLE_NAME] : 0n
+
+    // combine permission bits of given role and @everyone role
     const combinedPermissionBits = expectedRolePermissionBits | everyoneRolePermissionBits
-    expectPermissionsForRole(role.name, inheritEveryoneRole ? combinedPermissionBits : expectedRolePermissionBits)
+
+    // check if we want to inherit the permissions bits of @everyone role
+    const _inheritEveryoneRole = inheritEveryoneRole && !isFlagSet(expectedRolePermissionBits, flags.__IGNORE_EVERYONE_PERMISSIONS)
+
+    // select right set of permission bits, and remove internal flags
+    const finalPermissionBits = (_inheritEveryoneRole ? combinedPermissionBits : expectedRolePermissionBits) & ~flags.__IGNORE_EVERYONE_PERMISSIONS
+
+    // assert given role
+    expectPermissionsForRole(role.name, finalPermissionBits)
   }
 })
 

@@ -151,6 +151,11 @@ const _flagData = {
   TIMED_OUT: {
     bitPosition: 40n,
   },
+  // NOTE: custom flag, introduced by the test runner, to turn off inheriting @everyone permissions on a case-by-case basis
+  // NOTE: the exact bit position can be changed, as long as this flag and the test runner stay in sync
+  __IGNORE_EVERYONE_PERMISSIONS: {
+    bitPosition: 41n,
+  },
 }
 
 const flags = {}
