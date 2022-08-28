@@ -53,6 +53,7 @@ try {
       REGENS_UNITE_BOT: 'regens-unite-bot',
       CARL_BOT: 'carl-bot',
       DEWORK_BOT: 'dework-bot',
+      SIMPLE_POLL_BOT: 'simple-poll-bot',
       SERVER_BOOSTER: 'server-booster',
       REGULARS: 'regulars',
       MEMBER: 'member',
