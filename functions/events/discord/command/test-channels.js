@@ -56,6 +56,7 @@ try {
       SIMPLE_POLL_BOT: 'simple-poll-bot',
       SERVER_BOOSTER: 'server-booster',
       REGULARS: 'regulars',
+      EVENT_PLANNER: 'event-planner',
       MEMBER: 'member',
       ADMIN: 'admin', // NOTE: regular admin; doesn't have admin permissions by default, but can self-(un)assign the 'sudo' role
       SUDO: 'sudo', // NOTE: regular admin operating with elevated rights
@@ -162,6 +163,9 @@ try {
       [roles.ADMIN]: activateBits(0n, [
         ..._adminFlags,
       ]),
+      [roles.EVENT_PLANNER]: activateBits(0n, [
+        flags.MANAGE_EVENTS,
+      ])
     }
 
     // NOTE: use these settings for ONBOARDING channels (i.e. channels that are visible before verification)
