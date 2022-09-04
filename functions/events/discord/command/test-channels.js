@@ -463,7 +463,7 @@ try {
         expectPermissions(circleTextChannelPermissionBitsByRole(roles.CIRCLE_EVENTS))
       })
       expectTextChannel(() => {
-        expectName(`${circleIcon}🔅dao-ops`)
+        expectName(`${circleIcon}🔅dao-focused`)
         expectPermissions(circleTextChannelPermissionBitsByRole(roles.CIRCLE_DAO))
       })
     })
