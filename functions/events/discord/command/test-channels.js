@@ -623,10 +623,6 @@ try {
         expectPermissions(projectChannelPermissionBitsByRole)
       })
       expectTextChannel(() => {
-        expectName(`${projectsIcon}🔅decision-protocol`)
-        expectPermissions(projectChannelPermissionBitsByRole)
-      })
-      expectTextChannel(() => {
         expectName(`${projectsIcon}📝regen-journal`)
         expectPermissions(projectChannelPermissionBitsByRole)
       })
