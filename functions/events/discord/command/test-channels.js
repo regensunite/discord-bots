@@ -389,7 +389,7 @@ try {
         expectPermissions(onboardingChannelPermissionBitsByRole)
       })
       expectTextChannel(() => {
-        expectName(`${startHereIcon}✍🏼convenant`)
+        expectName(`${startHereIcon}✍🏼covenant`)
         expectPermissions(onboardingChannelPermissionBitsByRole)
       })
       expectTextChannel(() => {

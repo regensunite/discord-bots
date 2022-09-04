@@ -33,10 +33,10 @@
         "prefix": "!rub-install"
       }
     },
-    "functions/events/discord/message/create/prefix/rubconvenant.js": {
+    "functions/events/discord/message/create/prefix/rubcovenant.js": {
       "name": "discord.message.create.prefix",
       "subtype": {
-        "prefix": "!rub-convenant"
+        "prefix": "!rub-covenant"
       }
     },
     "functions/events/discord/message/create/prefix/rubsudo.js": {

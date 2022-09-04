@@ -9,9 +9,9 @@ const channels = await lib.discord.guilds['@0.2.4'].channels.list({
   guild_id: `${context.params.event.guild_id}`
 })
 
-const convenantChannel = channels.find(channel => channel.name.includes('convenant'))
-if (!convenantChannel) {
-  throw new Error('could not find convenant channel')
+const covenantChannel = channels.find(channel => channel.name.includes('covenant'))
+if (!covenantChannel) {
+  throw new Error('could not find covenant channel')
 }
 
 console.log(context.params.event.content)
@@ -37,7 +37,7 @@ await createOrUpdateMessage(lib, channelId, messageId, {
         `- 🇧🇪 **Brussels**, May 23-27, 2023`,
         `\n`,
         `\n`,
-        `💡 Please sign the <#${convenantChannel.id}> first, if you haven't done so yet, otherwise the emojis will not work.`,
+        `💡 Please sign the <#${covenantChannel.id}> first, if you haven't done so yet, otherwise the emojis will not work.`,
       ].join(''),
       "color": 0x295846,
     }
