@@ -32,7 +32,7 @@ await createOrUpdateMessage(lib, channelId, messageId, {
         `\n`,
         `- 🌱 Events`,
         `\n`,
-        `- 🔅 DAO operations`,
+        `- 🔅 DAO focused`,
         `\n`,
         `\n`,
         `💡 Please sign the <#${covenantChannel.id}> first, if you haven't done so yet, otherwise the emojis will not work.`,
