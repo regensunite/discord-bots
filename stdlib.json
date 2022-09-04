@@ -68,6 +68,9 @@
       "subtype": {
         "prefix": "!rub-affinities"
       }
+    },
+    "functions/events/discord/guild/member/add.js": {
+      "name": "discord.guild.member.add"
     }
   }
 }
