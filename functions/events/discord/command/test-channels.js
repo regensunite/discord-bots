@@ -56,6 +56,7 @@ try {
       SIMPLE_POLL_BOT: 'simple-poll-bot',
       SERVER_BOOSTER: 'server-booster',
       REGULARS: 'regulars',
+      RETREAT: 'ru-retreat',
       EVENT_PLANNER: 'event-planner',
       MEMBER: 'member',
       ADMIN: 'admin', // NOTE: regular admin; doesn't have admin permissions by default, but can self-(un)assign the 'sudo' role
@@ -306,6 +307,22 @@ try {
         ..._threadFlags,
         ..._voiceFlags,
         ..._stageFlags,
+      ]),
+    }
+
+    // NOTE: use these settings for the RETREAT channel
+    const retreatTextChannelPermissionBitsByRole = {
+      ..._defaultPermissionBitsByRole,
+      [roles.MEMBER]: activateBits(0n, [
+        // NOTE: cannot remove permissions below (set at category level) because discord does not show an option for that
+        ..._voiceFlags,
+        ..._stageFlags,
+      ]),
+      [roles.RETREAT]: activateBits(0n, [
+        ..._readFlags,
+        ..._writeFlags,
+        ..._threadFlags,
+        // NOTE: cannot add permissions for voice and stage channels, because discord does not show an option for that
       ]),
     }
 
@@ -641,6 +658,10 @@ try {
       expectTextChannel(() => {
         expectName(`${projectsIcon}🖥website`)
         expectPermissions(projectChannelPermissionBitsByRole)
+      })
+      expectTextChannel(() => {
+        expectName(`${projectsIcon}🔅regensunite-retreat`)
+        expectPermissions(retreatTextChannelPermissionBitsByRole)
       })
     })
 
