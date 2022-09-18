@@ -71,6 +71,15 @@
     },
     "functions/events/discord/guild/member/add.js": {
       "name": "discord.guild.member.add"
+    },
+    "functions/events/discord/dm/create": {
+      "name": "discord.dm.create"
     }
-  }
+  },
+  "env": [
+    {
+      "name": "REPORT_BOT_DM__CHANNEL_ID",
+      "description": "the id of the channel (inside the configured Discord server) that should be used to log messages sent to the discord bot"
+    }
+  ]
 }
