@@ -8,6 +8,7 @@ const channels = await lib.discord.guilds['@0.2.4'].channels.list({
   guild_id: `${context.params.event.guild_id}`
 })
 
+// TODO
 const infoBoothChannel = channels.find(channel => channel.name.includes('info-booth'))
 if (!infoBoothChannel) {
   throw new Error('could not find info-booth channel')

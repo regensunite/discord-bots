@@ -5,11 +5,10 @@ const lib = require('lib')({token: process.env.STDLIB_SECRET_TOKEN});
 
 await onlyOwner(context)
 
-const channels = await lib.discord.guilds['@0.2.4'].channels.list({
-  guild_id: `${context.params.event.guild_id}`
-})
 
-const covenantChannel = channels.find(channel => channel.name.includes('covenant'))
+let covenantChannel = await lib.discord.channels['@0.3.2'].retrieve({
+  channel_id: process.env.COVENANT__CHANNEL_ID,
+})
 if (!covenantChannel) {
   throw new Error('could not find covenant channel')
 }

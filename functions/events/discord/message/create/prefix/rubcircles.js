@@ -9,6 +9,7 @@ const channels = await lib.discord.guilds['@0.2.4'].channels.list({
   guild_id: `${context.params.event.guild_id}`
 })
 
+// TODO
 const covenantChannel = channels.find(channel => channel.name.includes('covenant'))
 if (!covenantChannel) {
   throw new Error('could not find covenant channel')

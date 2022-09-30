@@ -80,6 +80,18 @@
     {
       "name": "REPORT_BOT_DM__CHANNEL_ID",
       "description": "the id of the channel (inside the configured Discord server) that should be used to log messages sent to the discord bot"
+    },
+    {
+      "name": "COVENANT__CHANNEL_ID",
+      "description": "the id of the channel that contains our convenant"
+    },
+    {
+      "name": "INTRODUCE_YOURSELF__CHANNEL_ID",
+      "description": "the id of the channel where members should introduce themselves"
+    },
+    {
+      "name": "INFO_BOOTH__CHANNEL_ID",
+      "description": "the id of the channel with important info, official links, etc."
     }
   ]
 }
